@@ -26,7 +26,7 @@
 
 	<rm:searchPath name="orbit">
 		<rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false">
-			<rm:uri format="{0}/tools/orbit/downloads/drops/R20120119162704/repository">
+			<rm:uri format="{0}/tools/orbit/downloads/drops/S20120308061416/repository">
 				<bc:propertyRef key="eclipse.download.prefix" />
 			</rm:uri>
 		</rm:provider>

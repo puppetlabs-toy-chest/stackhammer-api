@@ -12,9 +12,10 @@ package org.cloudsmith.hammer.api.service;
 
 import java.util.Map;
 
+import org.cloudsmith.hammer.api.Constants;
 import org.cloudsmith.hammer.api.client.StackHammerClient;
 
-public class StackHammerService {
+public class StackHammerService implements Constants {
 	@SuppressWarnings("unchecked")
 	protected static <T> void addRequiredParam(Map<String, T> params, String paramName, T paramValue)
 			throws IllegalArgumentException {

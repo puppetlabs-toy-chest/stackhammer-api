@@ -38,6 +38,7 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.cloudsmith.hammer.api.Constants;
 import org.cloudsmith.hammer.api.json.JSONAdapter;
 import org.cloudsmith.hammer.api.json.JSONException;
 import org.cloudsmith.hammer.api.model.Diagnostic;
@@ -45,19 +46,7 @@ import org.cloudsmith.hammer.api.model.Diagnostic;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class StackHammerClient {
-	private static final String AUTH_TOKEN = "token"; //$NON-NLS-1$
-
-	private static final String CONTENT_TYPE_JSON = "application/json"; //$NON-NLS-1$
-
-	private static final String HEADER_CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
-
-	private static final String HEADER_ACCEPT = "Accept"; //$NON-NLS-1$
-
-	private static final String HEADER_AUTHORIZATION = "Authorization"; //$NON-NLS-1$
-
-	private static final String HEADER_USER_AGENT = "User-Agent"; //$NON-NLS-1$
-
+public class StackHammerClient implements Constants {
 	private static final String METHOD_GET = "GET"; //$NON-NLS-1$
 
 	private static final String METHOD_PUT = "PUT"; //$NON-NLS-1$

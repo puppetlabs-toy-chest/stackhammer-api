@@ -11,24 +11,22 @@
 
 package org.cloudsmith.hammer.api.model;
 
-public class DiagnosticWithLink extends Diagnostic {
-	private static final long serialVersionUID = 7323316406909195048L;
+public class ResultWithDiagnostic<T> extends Diagnostic {
+	private static final long serialVersionUID = 1618870489419505392L;
 
-	private String link;
+	private T result;
 
 	/**
-	 * @return the link
+	 * @return the result
 	 */
-	@Override
-	public String getLink() {
-		return link;
+	public T getResult() {
+		return result;
 	}
 
 	/**
-	 * @param link the link to set
+	 * @param result the result to set
 	 */
-	@Override
-	public void setLink(String link) {
-		this.link = link;
+	public void setResult(T result) {
+		this.result = result;
 	}
 }

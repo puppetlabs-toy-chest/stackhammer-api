@@ -17,6 +17,7 @@ import java.util.Map;
 import org.cloudsmith.hammer.api.client.StackHammerClient;
 import org.cloudsmith.hammer.api.model.Repository;
 import org.cloudsmith.hammer.api.model.ValidationResult;
+import org.cloudsmith.hammer.api.util.UrlUtils;
 
 public class StackService extends StackHammerService {
 
@@ -29,6 +30,12 @@ public class StackService extends StackHammerService {
 		addRequiredParam(params, "repository", repository);
 		addRequiredParam(params, "stackName", stackName);
 
-		return getClient().post("/user/stacks", params, Repository.class);
+		StringBuilder uriBld = new StringBuilder(SEGMENT_STACKS);
+		uriBld.append('/');
+		uriBld.append(UrlUtils.encode(stackName));
+		uriBld.append('/');
+		uriBld.append(COMMAND_VALIDATE);
+
+		return getClient().post(uriBld.toString(), params, Repository.class);
 	}
 }
