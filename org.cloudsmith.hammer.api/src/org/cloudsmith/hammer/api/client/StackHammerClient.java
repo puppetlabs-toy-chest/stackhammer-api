@@ -34,6 +34,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -46,6 +48,9 @@ import org.cloudsmith.hammer.api.model.Diagnostic;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+/**
+ * Class responsible for all request and response processing
+ */
 public class StackHammerClient implements Constants {
 	private static final String METHOD_GET = "GET"; //$NON-NLS-1$
 
@@ -149,7 +154,7 @@ public class StackHammerClient implements Constants {
 		if(isError(code)) {
 			final Diagnostic error;
 			try {
-				error = parseError(response);
+				error = parseError(code, response);
 			}
 			catch(IOException e) {
 				return e;
@@ -231,7 +236,7 @@ public class StackHammerClient implements Constants {
 			sendParams(request, params);
 		final int code = request.getResponseCode();
 		if(!isEmpty(code))
-			throw new RequestException(parseError(getStream(request)), code);
+			throw new RequestException(parseError(code, getStream(request)), code);
 	}
 
 	/**
@@ -363,8 +368,18 @@ public class StackHammerClient implements Constants {
 	 * @return request error
 	 * @throws IOException
 	 */
-	protected Diagnostic parseError(InputStream response) throws IOException {
-		return parseJson(response, Diagnostic.class);
+	protected Diagnostic parseError(int code, InputStream response) throws IOException {
+		Reader reader = new InputStreamReader(response, UTF_8);
+		StringBuilder bld = new StringBuilder();
+		char[] buffer = new char[1024];
+		int cnt;
+		while((cnt = reader.read(buffer)) > 0)
+			bld.append(buffer, 0, cnt);
+		Diagnostic diag = new Diagnostic();
+		diag.setMessage(bld.toString());
+		diag.setSeverity(Diagnostic.ERROR);
+		diag.setHttpCode(code);
+		return diag;
 	}
 
 	/**
@@ -513,7 +528,9 @@ public class StackHammerClient implements Constants {
 	 */
 	protected String toJson(Object object) throws IOException {
 		try {
-			return jsonAdapter.toJson(object);
+			StringWriter writer = new StringWriter();
+			jsonAdapter.toJson(object, writer);
+			return writer.toString();
 		}
 		catch(JSONException jpe) {
 			IOException ioe = new IOException("Parse exception converting object to JSON"); //$NON-NLS-1$

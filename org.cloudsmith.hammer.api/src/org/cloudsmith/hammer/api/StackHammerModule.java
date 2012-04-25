@@ -49,6 +49,16 @@ public abstract class StackHammerModule extends AbstractModule {
 		this(PROTOCOL_HTTPS, STACKHAMMER_HOST, 443, null, user, credentials);
 	}
 
+	/**
+	 * Create a new module for communication with the specified service using the given credentials
+	 * 
+	 * @param scheme URL scheme, i.e. http or https
+	 * @param hostname The hostname of the server
+	 * @param port The port number
+	 * @param prefix The prefix to use (first segment in URL path)
+	 * @param user The login of the user
+	 * @param credentials User credentials (i.e. API token)
+	 */
 	public StackHammerModule(String scheme, String hostname, int port, String prefix, String user, String credentials) {
 		super();
 		final StringBuilder uri = new StringBuilder(scheme);
@@ -58,16 +68,26 @@ public abstract class StackHammerModule extends AbstractModule {
 			uri.append(':');
 			uri.append(port);
 		}
-		if(prefix != null)
+		if(prefix != null) {
+			uri.append('/');
 			uri.append(prefix);
+		}
 		this.baseUri = uri.toString();
 		this.user = user;
 		this.credentials = credentials;
 
 	}
 
+	/**
+	 * Subclasses must implement this method to provide the correct JSON implementation
+	 * 
+	 * @param bind
+	 */
 	protected abstract void bindJSON(AnnotatedBindingBuilder<JSONAdapter> bind);
 
+	/**
+	 * Configure bindings for this module.
+	 */
 	@Override
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named("StackHammer user")).toInstance(user);
@@ -76,6 +96,13 @@ public abstract class StackHammerModule extends AbstractModule {
 		bindJSON(bind(JSONAdapter.class));
 	}
 
+	/**
+	 * Subclasses may implement this method to provide an alternative connection factory. The method
+	 * is primarily intended to be overriden by test frameworks where a fake connection might be
+	 * desirable.
+	 * 
+	 * @param bind
+	 */
 	@Provides
 	protected StackHammerConnectionFactory provideStackHammerConnectionFactory() {
 		return new UrlConnectionFactory();

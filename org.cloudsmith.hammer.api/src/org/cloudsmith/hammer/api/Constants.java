@@ -13,12 +13,15 @@ package org.cloudsmith.hammer.api;
 
 import java.nio.charset.Charset;
 
+/**
+ * Constants pertaining to the Stack Hammer API
+ */
 public interface Constants {
-	String SEGMENT_USERS = "/users";
+	String COMMAND_GROUP_USERS = "users";
 
-	String SEGMENT_REPOS = "/repos";
+	String COMMAND_GROUP_REPOS = "repos";
 
-	String SEGMENT_STACKS = "/stacks";
+	String COMMAND_GROUP_STACKS = "stacks";
 
 	String COMMAND_CLONE = "clone";
 
@@ -34,9 +37,11 @@ public interface Constants {
 
 	String AUTH_TOKEN = "token"; //$NON-NLS-1$
 
-	String PARAM_PROVIDER = "provider";
+	String PARAM_NAME = "name";
 
-	String PARAM_BRANCH = "branch";
+	String PARAM_REPOSITORY = "repository";
+
+	String PARAM_PROVIDER = "provider";
 
 	String CONTENT_TYPE_JSON = "application/json"; //$NON-NLS-1$
 

@@ -14,6 +14,10 @@ import java.io.IOException;
 
 import org.cloudsmith.hammer.api.model.Diagnostic;
 
+/**
+ * This exception is thrown when the server encounters abnormal behavior such
+ * as internal server errors.
+ */
 public class RequestException extends IOException {
 	private static final long serialVersionUID = 3014441430950697818L;
 

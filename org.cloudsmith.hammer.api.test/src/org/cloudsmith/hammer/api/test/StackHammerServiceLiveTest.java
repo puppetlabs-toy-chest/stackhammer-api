@@ -12,10 +12,10 @@
 package org.cloudsmith.hammer.api.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.cloudsmith.hammer.api.model.Diagnostic;
 import org.cloudsmith.hammer.api.model.Provider;
@@ -23,6 +23,7 @@ import org.cloudsmith.hammer.api.model.Repository;
 import org.cloudsmith.hammer.api.model.ResultWithDiagnostic;
 import org.cloudsmith.hammer.api.service.RepositoryService;
 import org.cloudsmith.hammer.api.service.StackHammerFactory;
+import org.cloudsmith.hammer.api.service.StackService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,40 +32,39 @@ import org.junit.Test;
  * @author thhal
  * 
  */
-public class RepositoryServiceTest extends AbstractTest {
-	private static final String REPOSERVICE_URL = "https://api.stackhammer.com:443/repos";
+public class StackHammerServiceLiveTest extends AbstractLiveTest {
+	private RepositoryService repoService;
 
-	private RepositoryService service;
+	private StackService stackService;
 
 	@Before
 	public void init() {
 		StackHammerFactory factory = getStackHammerFactory();
 		assertNotNull(factory);
-		service = factory.createRepositoryService();
-		assertNotNull(service);
+		stackService = factory.createStackService();
+		repoService = factory.createRepositoryService();
+		assertNotNull(stackService);
 	}
 
 	@Test
 	public void testCall() {
 		try {
-			FakeConnection conn = getFakeConnection();
-			conn.setResponseCode(200);
-			conn.setResponseMessage("OK");
-			conn.setContent("{ result: { name: \"cs-test1\", owner: \"test-repo\", provider: \"GITHUB\", branch: \"master\" }, severity: 0}");
-			ResultWithDiagnostic<Repository> result = service.cloneRepository(
-				Provider.GITHUB, "cs-test1", "test-repo", "master");
-			assertNotNull(result);
-			assertEquals(Diagnostic.OK, result.getSeverity());
-			Repository repo = result.getResult();
-			URL url = conn.getURL();
-			assertNotNull(url);
-			assertEquals(REPOSERVICE_URL + "/clone", url.toString());
-			assertEquals("POST", conn.getRequestMethod());
-			assertNotNull(repo);
-			assertEquals("cs-test1", repo.getName());
+			Activator activator = Activator.getInstance();
+			String owner = activator.getGitHubLogin();
+			ResultWithDiagnostic<Repository> cloneResult = repoService.cloneRepository(
+				Provider.GITHUB, owner, "puppetconf-demo", "master");
+			assertNotNull(cloneResult);
+			System.out.println(cloneResult);
+			assertEquals(Diagnostic.OK, cloneResult.getSeverity());
 
-			String output = conn.getWrittenOutput();
-			System.out.println(output);
+			Repository repo = cloneResult.getResult();
+			assertNotNull(repo);
+
+			ResultWithDiagnostic<byte[]> validationResult = stackService.validateStack(repo, repo.getOwner() + "/" +
+					repo.getName());
+			assertNotNull(validationResult);
+			System.out.println(validationResult);
+			assertFalse(validationResult.getSeverity() == Diagnostic.ERROR);
 		}
 		catch(IOException e) {
 			Assert.fail(e.getMessage());

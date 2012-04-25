@@ -10,7 +10,13 @@
  */
 package org.cloudsmith.hammer.api.model;
 
-public class Repository {
+import java.io.Serializable;
+
+public class Repository implements Serializable {
+	private static final long serialVersionUID = 1722039759667698371L;
+
+	private Provider provider;
+
 	private String owner;
 
 	private String name;
@@ -39,6 +45,13 @@ public class Repository {
 	}
 
 	/**
+	 * @return the provider
+	 */
+	public Provider getProvider() {
+		return provider;
+	}
+
+	/**
 	 * @param branch the branch to set
 	 */
 	public void setBranch(String branch) {
@@ -57,5 +70,28 @@ public class Repository {
 	 */
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	/**
+	 * @param provider the provider to set
+	 */
+	public void setProvider(Provider provider) {
+		this.provider = provider;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder bld = new StringBuilder();
+		if(owner != null)
+			bld.append(owner);
+		bld.append('/');
+		if(name != null)
+			bld.append(name);
+		if(branch != null) {
+			bld.append('[');
+			bld.append(branch);
+			bld.append(']');
+		}
+		return bld.toString();
 	}
 }

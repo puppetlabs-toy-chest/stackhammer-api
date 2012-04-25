@@ -10,6 +10,9 @@
  */
 package org.cloudsmith.hammer.api.json;
 
+/**
+ * Exception thrown during JSON serialization/deserialization
+ */
 public class JSONException extends Exception {
 
 	private static final long serialVersionUID = 7819337028727786692L;

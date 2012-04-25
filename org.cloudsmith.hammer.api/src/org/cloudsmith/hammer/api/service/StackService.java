@@ -11,13 +11,12 @@
 package org.cloudsmith.hammer.api.service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.cloudsmith.hammer.api.client.StackHammerClient;
 import org.cloudsmith.hammer.api.model.Repository;
+import org.cloudsmith.hammer.api.model.ValidationRequest;
 import org.cloudsmith.hammer.api.model.ValidationResult;
-import org.cloudsmith.hammer.api.util.UrlUtils;
+import org.cloudsmith.hammer.api.model.ValidationType;
 
 public class StackService extends StackHammerService {
 
@@ -25,17 +24,16 @@ public class StackService extends StackHammerService {
 		super(client);
 	}
 
+	@Override
+	protected String getCommandGroup() {
+		return COMMAND_GROUP_STACKS;
+	}
+
 	public ValidationResult validateStack(Repository repository, String stackName) throws IOException {
-		Map<String, Object> params = new HashMap<String, Object>();
-		addRequiredParam(params, "repository", repository);
-		addRequiredParam(params, "stackName", stackName);
-
-		StringBuilder uriBld = new StringBuilder(SEGMENT_STACKS);
-		uriBld.append('/');
-		uriBld.append(UrlUtils.encode(stackName));
-		uriBld.append('/');
-		uriBld.append(COMMAND_VALIDATE);
-
-		return getClient().post(uriBld.toString(), params, Repository.class);
+		ValidationRequest request = new ValidationRequest();
+		request.setRepository(repository);
+		request.setStackName(stackName);
+		request.setValidationType(ValidationType.SEMANTIC);
+		return getClient().post(getCommandURI(COMMAND_VALIDATE), request, ValidationResult.class);
 	}
 }

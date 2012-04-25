@@ -1,12 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the Stackhammer API
-Bundle-SymbolicName: org.cloudsmith.hammer.api.test
+Bundle-SymbolicName: org.cloudsmith.hammer.api.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Cloudsmith Inc.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework
-Require-Bundle: org.cloudsmith.hammer.api,
+Require-Bundle: org.apache.commons.codec;bundle-version="1.3.0",
+ org.cloudsmith.hammer.api,
  com.google.inject,
  com.google.gson,
  org.junit
+Bundle-Activator: org.cloudsmith.hammer.api.test.Activator
+Bundle-ActivationPolicy: lazy

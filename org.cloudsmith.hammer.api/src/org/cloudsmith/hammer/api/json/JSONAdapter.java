@@ -10,11 +10,32 @@
  */
 package org.cloudsmith.hammer.api.json;
 
-import java.io.BufferedReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Type;
 
+/**
+ * Simple adaptor for JSON serialization/deserialization. A user of this API must
+ * provide a suitable implementation
+ */
 public interface JSONAdapter {
-	<V> V fromJson(BufferedReader reader, Type type) throws JSONException;
+	/**
+	 * Deserialize the contents of the <code>reader</code> into an instance of the
+	 * given <code>type</code>
+	 * 
+	 * @param reader The reader holding the content
+	 * @param type The type of the instance to be parsed from the reader
+	 * @return The created instance
+	 * @throws JSONException
+	 */
+	<V> V fromJson(Reader reader, Type type) throws JSONException;
 
-	String toJson(Object object) throws JSONException;
+	/**
+	 * Serialize the given <code>object</code> onto the <code>writer</code>
+	 * 
+	 * @param object The object to serialize
+	 * @param writer The writer where the serialized object is written
+	 * @throws JSONException
+	 */
+	void toJson(Object object, Writer writer) throws JSONException;
 }

@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.cloudsmith.hammer.api.util.UrlUtils;
 
+/**
+ */
 public class StackHammerRequest {
 
 	private String uri;

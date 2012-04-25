@@ -14,69 +14,69 @@ package org.cloudsmith.hammer.api.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
 /**
- * @author thhal
- * 
+ * This is primarily an abstraction of a URLConnection, making it easier
+ * to provide a fake connection where only a small subset of the methods
+ * must be implemented.
  */
 public interface StackHammerConnection {
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getErrorStream()}
 	 */
 	InputStream getErrorStream();
 
 	/**
-	 * @param key
-	 * @return
+	 * See {@link HttpURLConnection#getHeaderField()}
 	 */
 	String getHeaderField(String key);
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getInputStream()}
 	 */
 	InputStream getInputStream() throws IOException;
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getOutputStream()}
 	 */
 	OutputStream getOutputStream() throws IOException;
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getResponseCode()}
 	 */
 	int getResponseCode() throws IOException;
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getResponseMessage()}
 	 */
 	String getResponseMessage() throws IOException;
 
 	/**
-	 * @return
+	 * See {@link HttpURLConnection#getURL()}
 	 */
 	URL getURL();
 
 	/**
-	 * @param flag
+	 * See {@link HttpURLConnection#setDoOutput(boolean))}
 	 */
 	void setDoOutput(boolean flag);
 
 	/**
-	 * @param length
+	 * See {@link HttpURLConnection#setFixedLengthStreamingMode(int))}
 	 */
 	void setFixedLengthStreamingMode(int length);
 
 	/**
-	 * @param method
+	 * See {@link HttpURLConnection#setRequestMethod(String))}
 	 */
 	void setRequestMethod(String method) throws ProtocolException;
 
 	/**
-	 * @param key
-	 * @param value
+	 * See {@link HttpURLConnection#setRequestProperty(String, String))}
 	 */
 	void setRequestProperty(String key, String value);
 }

@@ -9,14 +9,8 @@
  *   Thomas Hallgren (Cloudsmith Inc.) - initial API and implementation
  */
 
-package org.cloudsmith.hammer.api.client;
+package org.cloudsmith.hammer.api.model;
 
-import java.io.IOException;
-import java.net.URL;
-
-/**
- * Factory capable of creating connections
- */
-public interface StackHammerConnectionFactory {
-	StackHammerConnection createConnection(URL url) throws IOException;
+public enum ValidationType {
+	SEMANTIC, DRY_RUN
 }

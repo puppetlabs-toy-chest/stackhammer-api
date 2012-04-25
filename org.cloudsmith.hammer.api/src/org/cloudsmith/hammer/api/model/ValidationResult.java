@@ -10,38 +10,6 @@
  */
 package org.cloudsmith.hammer.api.model;
 
-import java.util.List;
-
-public class ValidationResult {
-	private List<Diagnostic> warnings;
-
-	private List<Diagnostic> errors;
-
-	/**
-	 * @return the errors
-	 */
-	public List<Diagnostic> getErrors() {
-		return errors;
-	}
-
-	/**
-	 * @return the warnings
-	 */
-	public List<Diagnostic> getWarnings() {
-		return warnings;
-	}
-
-	/**
-	 * @param errors the errors to set
-	 */
-	public void setErrors(List<Diagnostic> errors) {
-		this.errors = errors;
-	}
-
-	/**
-	 * @param warnings the warnings to set
-	 */
-	public void setWarnings(List<Diagnostic> warnings) {
-		this.warnings = warnings;
-	}
+public class ValidationResult extends ResultWithDiagnostic<byte[]> {
+	private static final long serialVersionUID = 4211114376595157306L;
 }

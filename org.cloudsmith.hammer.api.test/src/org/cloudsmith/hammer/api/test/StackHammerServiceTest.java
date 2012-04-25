@@ -11,18 +11,14 @@
 
 package org.cloudsmith.hammer.api.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URL;
 
-import org.cloudsmith.hammer.api.model.Diagnostic;
-import org.cloudsmith.hammer.api.model.Provider;
 import org.cloudsmith.hammer.api.model.Repository;
 import org.cloudsmith.hammer.api.model.ResultWithDiagnostic;
-import org.cloudsmith.hammer.api.service.RepositoryService;
 import org.cloudsmith.hammer.api.service.StackHammerFactory;
+import org.cloudsmith.hammer.api.service.StackService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,38 +27,32 @@ import org.junit.Test;
  * @author thhal
  * 
  */
-public class RepositoryServiceTest extends AbstractTest {
+public class StackHammerServiceTest extends AbstractTest {
 	private static final String REPOSERVICE_URL = "https://api.stackhammer.com:443/repos";
 
-	private RepositoryService service;
+	private StackService service;
 
 	@Before
 	public void init() {
 		StackHammerFactory factory = getStackHammerFactory();
 		assertNotNull(factory);
-		service = factory.createRepositoryService();
+		service = factory.createStackService();
 		assertNotNull(service);
 	}
 
 	@Test
 	public void testCall() {
+		FakeConnection conn = getFakeConnection();
 		try {
-			FakeConnection conn = getFakeConnection();
 			conn.setResponseCode(200);
 			conn.setResponseMessage("OK");
-			conn.setContent("{ result: { name: \"cs-test1\", owner: \"test-repo\", provider: \"GITHUB\", branch: \"master\" }, severity: 0}");
-			ResultWithDiagnostic<Repository> result = service.cloneRepository(
-				Provider.GITHUB, "cs-test1", "test-repo", "master");
-			assertNotNull(result);
-			assertEquals(Diagnostic.OK, result.getSeverity());
-			Repository repo = result.getResult();
-			URL url = conn.getURL();
-			assertNotNull(url);
-			assertEquals(REPOSERVICE_URL + "/clone", url.toString());
-			assertEquals("POST", conn.getRequestMethod());
-			assertNotNull(repo);
-			assertEquals("cs-test1", repo.getName());
+			conn.setContent("{severity: 0}");
 
+			Repository repo = new Repository();
+			repo.setBranch("master");
+			repo.setName("guide-fix-stack");
+			repo.setOwner("cs-test1");
+			ResultWithDiagnostic<byte[]> result = service.validateStack(repo, "cs-test1/guide-fix-stack");
 			String output = conn.getWrittenOutput();
 			System.out.println(output);
 		}

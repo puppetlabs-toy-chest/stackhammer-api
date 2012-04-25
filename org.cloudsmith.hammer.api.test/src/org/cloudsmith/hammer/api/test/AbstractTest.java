@@ -10,12 +10,13 @@
  */
 package org.cloudsmith.hammer.api.test;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -175,13 +176,13 @@ public class AbstractTest {
 		private final Gson gson = gsonBuilder.create();
 
 		@Override
-		public <V> V fromJson(BufferedReader reader, Type type) throws JSONException {
+		public <V> V fromJson(Reader reader, Type type) throws JSONException {
 			return gson.fromJson(reader, type);
 		}
 
 		@Override
-		public String toJson(Object object) throws JSONException {
-			return gson.toJson(object);
+		public void toJson(Object object, Writer writer) throws JSONException {
+			gson.toJson(object, writer);
 		}
 	}
 

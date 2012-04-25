@@ -11,14 +11,11 @@
 package org.cloudsmith.hammer.api.service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.cloudsmith.hammer.api.client.StackHammerClient;
 import org.cloudsmith.hammer.api.model.Provider;
 import org.cloudsmith.hammer.api.model.Repository;
 import org.cloudsmith.hammer.api.model.ResultWithDiagnostic;
-import org.cloudsmith.hammer.api.util.UrlUtils;
 
 public class RepositoryService extends StackHammerService {
 
@@ -32,18 +29,16 @@ public class RepositoryService extends StackHammerService {
 
 	public ResultWithDiagnostic<Repository> cloneRepository(Provider provider, String owner, String name, String branch)
 			throws IOException {
-		Map<String, Object> params = new HashMap<String, Object>();
-		addRequiredParam(params, PARAM_PROVIDER, provider.name());
-		addRequiredParam(params, PARAM_BRANCH, branch);
+		Repository repo = new Repository();
+		repo.setName(name);
+		repo.setOwner(owner);
+		repo.setBranch(branch);
+		repo.setProvider(provider);
+		return getClient().post(getCommandURI(COMMAND_CLONE), repo, RepositoryResult.class);
+	}
 
-		StringBuilder uriBld = new StringBuilder(SEGMENT_REPOS);
-		uriBld.append('/');
-		uriBld.append(UrlUtils.encode(owner));
-		uriBld.append('/');
-		uriBld.append(UrlUtils.encode(name));
-		uriBld.append('/');
-		uriBld.append(COMMAND_CLONE);
-
-		return getClient().post(uriBld.toString(), params, RepositoryResult.class);
+	@Override
+	protected String getCommandGroup() {
+		return COMMAND_GROUP_REPOS;
 	}
 }
