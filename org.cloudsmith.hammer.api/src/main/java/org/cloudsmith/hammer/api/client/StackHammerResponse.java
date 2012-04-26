@@ -17,20 +17,18 @@
  */
 package org.cloudsmith.hammer.api.client;
 
-
-
-public class StackHammerResponse {
+public class StackHammerResponse<V> {
 
 	private final StackHammerConnection response;
 
-	private final Object body;
+	private final V body;
 
-	public StackHammerResponse(StackHammerConnection response, Object body) {
+	public StackHammerResponse(StackHammerConnection response, V body) {
 		this.response = response;
 		this.body = body;
 	}
 
-	public Object getBody() {
+	public V getBody() {
 		return body;
 	}
 

@@ -10,9 +10,6 @@
  */
 package org.cloudsmith.hammer.api.test;
 
-import java.io.Reader;
-import java.io.Writer;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import org.cloudsmith.hammer.api.StackHammerModule;
@@ -39,22 +36,20 @@ public class AbstractLiveTest {
 		private final Gson gson = gsonBuilder.create();
 
 		@Override
-		public <V> V fromJson(Reader reader, Type type) throws JSONException {
-			return gson.fromJson(reader, type);
+		public <V> V fromJson(String jsonString, Class<V> type) throws JSONException {
+			return gson.fromJson(jsonString, type);
 		}
 
 		@Override
-		public void toJson(Object object, Writer writer) throws JSONException {
-			gson.toJson(object, writer);
+		public String toJson(Object bean) throws JSONException {
+			return gson.toJson(bean);
 		}
 	}
 
 	class StackHammerTestModule extends StackHammerModule {
 
 		public StackHammerTestModule() {
-			super(
-				"http", "localhost", 8080, "api", Activator.getInstance().getGitHubLogin(),
-				Activator.getInstance().getAccessToken());
+			super("http", "localhost", 8080, "api", Activator.getInstance().getAccessToken());
 		}
 
 		@Override

@@ -17,20 +17,19 @@
  */
 package org.cloudsmith.hammer.api.client;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.cloudsmith.hammer.api.util.UrlUtils;
 
 /**
  */
-public class StackHammerRequest {
+public class StackHammerRequest<V> {
 
 	private String uri;
 
 	private Map<String, String> params;
 
-	private Type type;
+	private Class<V> type;
 
 	private String responseContentType;
 
@@ -41,7 +40,7 @@ public class StackHammerRequest {
 		if(!(obj instanceof StackHammerRequest))
 			return false;
 		final String fullUri = generateUri();
-		final String objUri = ((StackHammerRequest) obj).generateUri();
+		final String objUri = ((StackHammerRequest<?>) obj).generateUri();
 		return fullUri != null && objUri != null && fullUri.equals(objUri);
 	}
 
@@ -67,7 +66,7 @@ public class StackHammerRequest {
 		return responseContentType;
 	}
 
-	public Type getType() {
+	public Class<V> getType() {
 		return type;
 	}
 
@@ -91,7 +90,7 @@ public class StackHammerRequest {
 		this.responseContentType = responseContentType;
 	}
 
-	public void setType(Type type) {
+	public void setType(Class<V> type) {
 		this.type = type;
 	}
 

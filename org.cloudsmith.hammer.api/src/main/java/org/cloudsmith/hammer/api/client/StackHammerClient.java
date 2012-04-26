@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -72,8 +71,6 @@ public class StackHammerClient implements Constants {
 
 	private final StackHammerConnectionFactory connectionFactory;
 
-	private final String user;
-
 	private final String credentials;
 
 	private String userAgent;
@@ -84,13 +81,11 @@ public class StackHammerClient implements Constants {
 	public StackHammerClient(
 		// @fmtOff
 		@Named("StackHammer baseUri") String baseUri,
-		@Named("StackHammer user") String user,
 		@Named("StackHammer credentials") String credentials,
 		JSONAdapter jsonAdapter,
 		StackHammerConnectionFactory connectionFactory)	{
 		// @fmtOn
 		this.baseUri = baseUri;
-		this.user = user;
 		this.credentials = credentials == null
 				? null
 				: (AUTH_TOKEN + ' ' + credentials);
@@ -246,16 +241,16 @@ public class StackHammerClient implements Constants {
 	 * @return response
 	 * @throws IOException
 	 */
-	public StackHammerResponse get(StackHammerRequest request) throws IOException {
+	public <V> StackHammerResponse<V> get(StackHammerRequest<V> request) throws IOException {
 		StackHammerConnection httpRequest = createGet(request.generateUri());
 		String accept = request.getResponseContentType();
 		if(accept != null)
 			httpRequest.setRequestProperty(HEADER_ACCEPT, accept);
 		final int code = httpRequest.getResponseCode();
 		if(isOk(code))
-			return new StackHammerResponse(httpRequest, getBody(request, getStream(httpRequest)));
+			return new StackHammerResponse<V>(httpRequest, getBody(request, getStream(httpRequest)));
 		if(isEmpty(code))
-			return new StackHammerResponse(httpRequest, null);
+			return new StackHammerResponse<V>(httpRequest, null);
 		throw createException(getStream(httpRequest), code, httpRequest.getResponseMessage());
 	}
 
@@ -267,8 +262,8 @@ public class StackHammerClient implements Constants {
 	 * @return parsed body
 	 * @throws IOException
 	 */
-	protected Object getBody(StackHammerRequest request, InputStream stream) throws IOException {
-		Type type = request.getType();
+	protected <V> V getBody(StackHammerRequest<V> request, InputStream stream) throws IOException {
+		Class<V> type = request.getType();
 		return type == null
 				? null
 				: parseJson(stream, type);
@@ -289,27 +284,6 @@ public class StackHammerClient implements Constants {
 		return stream != null
 				? stream
 				: request.getInputStream();
-	}
-
-	/**
-	 * Get response stream from URI. It is the responsibility of the calling
-	 * method to close the returned stream.
-	 * 
-	 * @param request
-	 * @return stream
-	 * @throws IOException
-	 */
-	public InputStream getStream(StackHammerRequest request) throws IOException {
-		return getStream(createGet(request.generateUri()));
-	}
-
-	/**
-	 * Get the user that this client is currently authenticating as
-	 * 
-	 * @return user or null if not authentication
-	 */
-	public String getUser() {
-		return user;
 	}
 
 	/**
@@ -391,10 +365,16 @@ public class StackHammerClient implements Constants {
 	 * @return parsed type
 	 * @throws IOException
 	 */
-	protected <V> V parseJson(InputStream stream, Type type) throws IOException {
+	protected <V> V parseJson(InputStream stream, Class<V> type) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, UTF_8), bufferSize);
+		StringBuilder bld = new StringBuilder();
+		char[] buf = new char[1024];
+		int cnt;
+		while((cnt = reader.read(buf)) > 0)
+			bld.append(buf, 0, cnt);
+
 		try {
-			return jsonAdapter.fromJson(reader, type);
+			return jsonAdapter.fromJson(bld.toString(), type);
 		}
 		catch(JSONException jpe) {
 			IOException ioe = new IOException("Parse exception converting JSON to object"); //$NON-NLS-1$
@@ -431,7 +411,7 @@ public class StackHammerClient implements Constants {
 	 * @return response
 	 * @throws IOException
 	 */
-	public <V> V post(final String uri, final Object params, final Type type) throws IOException {
+	public <V> V post(final String uri, final Object params, final Class<V> type) throws IOException {
 		StackHammerConnection request = createPost(uri);
 		return sendJson(request, params, type);
 	}
@@ -456,12 +436,12 @@ public class StackHammerClient implements Constants {
 	 * @return response
 	 * @throws IOException
 	 */
-	public <V> V put(final String uri, final Object params, final Type type) throws IOException {
+	public <V> V put(final String uri, final Object params, final Class<V> type) throws IOException {
 		StackHammerConnection request = createPut(uri);
 		return sendJson(request, params, type);
 	}
 
-	private <V> V sendJson(final StackHammerConnection request, final Object params, final Type type)
+	private <V> V sendJson(final StackHammerConnection request, final Object params, final Class<V> type)
 			throws IOException {
 		if(params != null)
 			sendParams(request, params);
@@ -529,7 +509,7 @@ public class StackHammerClient implements Constants {
 	protected String toJson(Object object) throws IOException {
 		try {
 			StringWriter writer = new StringWriter();
-			jsonAdapter.toJson(object, writer);
+			jsonAdapter.toJson(object);
 			return writer.toString();
 		}
 		catch(JSONException jpe) {

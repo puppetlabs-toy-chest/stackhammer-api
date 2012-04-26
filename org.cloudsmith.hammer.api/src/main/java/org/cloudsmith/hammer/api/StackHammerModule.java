@@ -41,12 +41,10 @@ public abstract class StackHammerModule extends AbstractModule {
 
 	private final String baseUri;
 
-	private final String user;
-
 	private final String credentials;
 
-	public StackHammerModule(String user, String credentials) {
-		this(PROTOCOL_HTTPS, STACKHAMMER_HOST, 443, null, user, credentials);
+	public StackHammerModule(String credentials) {
+		this(PROTOCOL_HTTPS, STACKHAMMER_HOST, 443, null, credentials);
 	}
 
 	/**
@@ -59,7 +57,7 @@ public abstract class StackHammerModule extends AbstractModule {
 	 * @param user The login of the user
 	 * @param credentials User credentials (i.e. API token)
 	 */
-	public StackHammerModule(String scheme, String hostname, int port, String prefix, String user, String credentials) {
+	public StackHammerModule(String scheme, String hostname, int port, String prefix, String credentials) {
 		super();
 		final StringBuilder uri = new StringBuilder(scheme);
 		uri.append("://");
@@ -68,12 +66,10 @@ public abstract class StackHammerModule extends AbstractModule {
 			uri.append(':');
 			uri.append(port);
 		}
-		if(prefix != null) {
-			uri.append('/');
+		if(prefix != null)
 			uri.append(prefix);
-		}
+
 		this.baseUri = uri.toString();
-		this.user = user;
 		this.credentials = credentials;
 
 	}
@@ -90,7 +86,6 @@ public abstract class StackHammerModule extends AbstractModule {
 	 */
 	@Override
 	protected void configure() {
-		bind(String.class).annotatedWith(Names.named("StackHammer user")).toInstance(user);
 		bind(String.class).annotatedWith(Names.named("StackHammer credentials")).toInstance(credentials);
 		bind(String.class).annotatedWith(Names.named("StackHammer baseUri")).toInstance(baseUri);
 		bindJSON(bind(JSONAdapter.class));

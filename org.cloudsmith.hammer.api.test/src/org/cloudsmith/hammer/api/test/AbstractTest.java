@@ -15,9 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.lang.reflect.Type;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -176,20 +173,20 @@ public class AbstractTest {
 		private final Gson gson = gsonBuilder.create();
 
 		@Override
-		public <V> V fromJson(Reader reader, Type type) throws JSONException {
-			return gson.fromJson(reader, type);
+		public <V> V fromJson(String jsonString, Class<V> type) throws JSONException {
+			return gson.fromJson(jsonString, type);
 		}
 
 		@Override
-		public void toJson(Object object, Writer writer) throws JSONException {
-			gson.toJson(object, writer);
+		public String toJson(Object bean) throws JSONException {
+			return gson.toJson(bean);
 		}
 	}
 
 	class StackHammerTestModule extends StackHammerModule {
 
 		public StackHammerTestModule() {
-			super("tester", "abcdefgh");
+			super("abcdefgh");
 		}
 
 		@Override
