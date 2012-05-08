@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
+>
+	<rm:locator pattern="^org\.cloudsmith\.stackhammer\.api(\..+)?$" searchPathRef="stackhammer-api" />
+	<rm:locator searchPathRef="platform" failOnError="false" />
+	<rm:locator searchPathRef="orbit" failOnError="false" />
+
+	<rm:searchPath name="stackhammer-api">
+		<rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git" source="true">
+			<rm:property key="git.remote.uri" value="${cloudsmith.git.prefix}/stackhammer-api.git" />
+			<rm:uri format="{0}/stackhammer-api,{2}">
+				<bc:propertyRef key="releng.clone.root" />
+				<bc:propertyRef key="buckminster.component" />
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="platform">
+		<rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false">
+			<rm:uri format="{0}/eclipse/updates/3.7/R-3.7.2-201202080800">
+				<bc:propertyRef key="eclipse.download.prefix" />
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="orbit">
+		<rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false">
+			<rm:uri format="{0}/tools/orbit/downloads/drops/S20120308061416/repository">
+				<bc:propertyRef key="eclipse.download.prefix" />
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:property key="cloudsmith.git.prefix" value="git@github.com:cloudsmith" />
+
+	<rm:property key="eclipse.download.prefix" value="http://download.eclipse.org" />
+	<rm:property key="releng.clone.root" value="${git.clones.root}" />
+</rm:rmap>

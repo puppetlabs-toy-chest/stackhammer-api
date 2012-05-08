@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Stackhammer REST API
+Bundle-SymbolicName: org.cloudsmith.stackhammer.api
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Cloudsmith Inc.
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.cloudsmith.stackhammer.api,
+ org.cloudsmith.stackhammer.api.client,
+ org.cloudsmith.stackhammer.api.model,
+ org.cloudsmith.stackhammer.api.service,
+ org.cloudsmith.stackhammer.api.util
+Require-Bundle: com.google.inject,
+ com.google.gson
