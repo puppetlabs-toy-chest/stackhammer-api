@@ -10,6 +10,11 @@
  */
 package org.cloudsmith.hammer.api.model;
 
-public class ValidationResult extends ResultWithDiagnostic<byte[]> {
+/**
+ * The result of a Validation is a base-64 encoded string representing
+ * the bytes of an SVG image which in turn represents the validation
+ * graph.
+ */
+public class ValidationResult extends ResultWithDiagnostic<String> {
 	private static final long serialVersionUID = 4211114376595157306L;
 }

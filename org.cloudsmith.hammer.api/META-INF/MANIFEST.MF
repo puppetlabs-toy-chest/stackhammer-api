@@ -7,8 +7,8 @@ Bundle-Vendor: Cloudsmith Inc.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.cloudsmith.hammer.api,
  org.cloudsmith.hammer.api.client,
- org.cloudsmith.hammer.api.json,
  org.cloudsmith.hammer.api.model,
  org.cloudsmith.hammer.api.service,
  org.cloudsmith.hammer.api.util
-Require-Bundle: com.google.inject
+Require-Bundle: com.google.inject,
+ com.google.gson

@@ -15,5 +15,12 @@ package org.cloudsmith.hammer.api.model;
  * GitHub is the only one.
  */
 public enum Provider {
-	GITHUB;
+	GITHUB {
+		@Override
+		public String getRepositoryBase(String owner, String name, String branch) {
+			return "https://github.com/" + owner + '/' + name + "/blob/" + branch + '/';
+		}
+	};
+
+	public abstract String getRepositoryBase(String owner, String name, String branch);
 }

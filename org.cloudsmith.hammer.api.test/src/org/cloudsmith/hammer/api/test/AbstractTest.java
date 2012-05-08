@@ -23,15 +23,10 @@ import java.util.HashMap;
 import org.cloudsmith.hammer.api.StackHammerModule;
 import org.cloudsmith.hammer.api.client.StackHammerConnection;
 import org.cloudsmith.hammer.api.client.StackHammerConnectionFactory;
-import org.cloudsmith.hammer.api.json.JSONAdapter;
-import org.cloudsmith.hammer.api.json.JSONException;
 import org.cloudsmith.hammer.api.service.StackHammerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.binder.AnnotatedBindingBuilder;
 
 public class AbstractTest {
 	@SuppressWarnings("serial")
@@ -162,36 +157,10 @@ public class AbstractTest {
 		}
 	}
 
-	public static class GoogleJSONAdapter implements JSONAdapter {
-		private static final GsonBuilder gsonBuilder;
-
-		static {
-			gsonBuilder = new GsonBuilder();
-			gsonBuilder.setPrettyPrinting();
-		}
-
-		private final Gson gson = gsonBuilder.create();
-
-		@Override
-		public <V> V fromJson(String jsonString, Class<V> type) throws JSONException {
-			return gson.fromJson(jsonString, type);
-		}
-
-		@Override
-		public String toJson(Object bean) throws JSONException {
-			return gson.toJson(bean);
-		}
-	}
-
 	class StackHammerTestModule extends StackHammerModule {
 
 		public StackHammerTestModule() {
 			super("abcdefgh");
-		}
-
-		@Override
-		protected void bindJSON(AnnotatedBindingBuilder<JSONAdapter> bind) {
-			bind.to(GoogleJSONAdapter.class);
 		}
 
 		@Override

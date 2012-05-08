@@ -35,15 +35,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.cloudsmith.hammer.api.Constants;
-import org.cloudsmith.hammer.api.json.JSONAdapter;
-import org.cloudsmith.hammer.api.json.JSONException;
 import org.cloudsmith.hammer.api.model.Diagnostic;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -65,9 +65,16 @@ public class StackHammerClient implements Constants {
 
 	private final static Charset UTF_8 = Charset.forName("UTF-8");
 
+	private static final GsonBuilder gsonBuilder;
+
+	static {
+		gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+	}
+
 	private final String baseUri;
 
-	private final JSONAdapter jsonAdapter;
+	private final Gson gson = gsonBuilder.create();
 
 	private final StackHammerConnectionFactory connectionFactory;
 
@@ -82,14 +89,12 @@ public class StackHammerClient implements Constants {
 		// @fmtOff
 		@Named("StackHammer baseUri") String baseUri,
 		@Named("StackHammer credentials") String credentials,
-		JSONAdapter jsonAdapter,
 		StackHammerConnectionFactory connectionFactory)	{
 		// @fmtOn
 		this.baseUri = baseUri;
 		this.credentials = credentials == null
 				? null
 				: (AUTH_TOKEN + ' ' + credentials);
-		this.jsonAdapter = jsonAdapter;
 		this.connectionFactory = connectionFactory;
 	}
 
@@ -367,16 +372,10 @@ public class StackHammerClient implements Constants {
 	 */
 	protected <V> V parseJson(InputStream stream, Class<V> type) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, UTF_8), bufferSize);
-		StringBuilder bld = new StringBuilder();
-		char[] buf = new char[1024];
-		int cnt;
-		while((cnt = reader.read(buf)) > 0)
-			bld.append(buf, 0, cnt);
-
 		try {
-			return jsonAdapter.fromJson(bld.toString(), type);
+			return gson.fromJson(reader, type);
 		}
-		catch(JSONException jpe) {
+		catch(JsonSyntaxException jpe) {
 			IOException ioe = new IOException("Parse exception converting JSON to object"); //$NON-NLS-1$
 			ioe.initCause(jpe);
 			throw ioe;
@@ -506,16 +505,7 @@ public class StackHammerClient implements Constants {
 	 * @return JSON string
 	 * @throws IOException
 	 */
-	protected String toJson(Object object) throws IOException {
-		try {
-			StringWriter writer = new StringWriter();
-			jsonAdapter.toJson(object);
-			return writer.toString();
-		}
-		catch(JSONException jpe) {
-			IOException ioe = new IOException("Parse exception converting object to JSON"); //$NON-NLS-1$
-			ioe.initCause(jpe);
-			throw ioe;
-		}
+	protected String toJson(Object object) {
+		return gson.toJson(object);
 	}
 }

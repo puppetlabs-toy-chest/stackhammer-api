@@ -77,7 +77,7 @@ public class Diagnostic implements Serializable {
 	public List<Diagnostic> getChildren() {
 		return children == null
 				? Collections.<Diagnostic> emptyList()
-				: children;
+				: Collections.unmodifiableList(children);
 	}
 
 	public int getHttpCode() {
@@ -138,11 +138,28 @@ public class Diagnostic implements Serializable {
 		return severity;
 	}
 
+	public String getSeverityString() {
+		return getSeverityString(getSeverity());
+	}
+
 	/**
 	 * @return the source
 	 */
 	public String getSource() {
 		return source;
+	}
+
+	/**
+	 * This method is needed by net.sf.json but should not otherwise
+	 * be used.
+	 * 
+	 * @param children The new children to set
+	 * @see #addChild(Diagnostic)
+	 * @see #addChildren(Collection)
+	 */
+	public void setChildren(List<Diagnostic> children) {
+		this.children = null;
+		addChildren(children);
 	}
 
 	public void setHttpCode(int code) {

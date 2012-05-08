@@ -12,28 +12,24 @@
 package org.cloudsmith.hammer.api;
 
 import org.cloudsmith.hammer.api.client.StackHammerConnectionFactory;
-import org.cloudsmith.hammer.api.json.JSONAdapter;
 import org.cloudsmith.hammer.api.util.UrlUtils.UrlConnectionFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
-import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.name.Names;
 
 /**
  * <p>This is the main entry point to the Stack Hammer API. It uses {@link Guice} to
  * establish all bindings.</p>
- * <p>The class must be subclassed with an implementation that provides bindings
- * for the {@link JSONAdapter} and {@link Base64Adapter}.</p>
- * Intended usage (the subclass is named <tt>RealStackHammerModule</tt> here but that's just
- * an example):<pre>
- * Injector injector = Guice.createInjector(new RealStackHammerModule(user, credentials));
+ * <p>
+ * Intended usage:<pre>
+ * Injector injector = Guice.createInjector(new StackHammerModule(user, credentials));
  * StackHammerFactory factory = injector.getInstance(StackHammerFactory.class);
  * // Use factory to create desired service and continue from there
  * </pre>
  */
-public abstract class StackHammerModule extends AbstractModule {
+public class StackHammerModule extends AbstractModule {
 
 	private static final String PROTOCOL_HTTPS = "https"; //$NON-NLS-1$
 
@@ -75,20 +71,12 @@ public abstract class StackHammerModule extends AbstractModule {
 	}
 
 	/**
-	 * Subclasses must implement this method to provide the correct JSON implementation
-	 * 
-	 * @param bind
-	 */
-	protected abstract void bindJSON(AnnotatedBindingBuilder<JSONAdapter> bind);
-
-	/**
 	 * Configure bindings for this module.
 	 */
 	@Override
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named("StackHammer credentials")).toInstance(credentials);
 		bind(String.class).annotatedWith(Names.named("StackHammer baseUri")).toInstance(baseUri);
-		bindJSON(bind(JSONAdapter.class));
 	}
 
 	/**

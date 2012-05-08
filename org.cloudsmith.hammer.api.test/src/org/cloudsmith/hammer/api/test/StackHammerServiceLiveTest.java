@@ -60,7 +60,7 @@ public class StackHammerServiceLiveTest extends AbstractLiveTest {
 			Repository repo = cloneResult.getResult();
 			assertNotNull(repo);
 
-			ResultWithDiagnostic<byte[]> validationResult = stackService.validateStack(repo, repo.getOwner() + "/" +
+			ResultWithDiagnostic<String> validationResult = stackService.validateStack(repo, repo.getOwner() + "/" +
 					repo.getName());
 			assertNotNull(validationResult);
 			System.out.println(validationResult);

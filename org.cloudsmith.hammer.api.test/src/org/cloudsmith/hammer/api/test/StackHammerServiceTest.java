@@ -52,7 +52,7 @@ public class StackHammerServiceTest extends AbstractTest {
 			repo.setBranch("master");
 			repo.setName("guide-fix-stack");
 			repo.setOwner("cs-test1");
-			ResultWithDiagnostic<byte[]> result = service.validateStack(repo, "cs-test1/guide-fix-stack");
+			ResultWithDiagnostic<String> result = service.validateStack(repo, "cs-test1/guide-fix-stack");
 			String output = conn.getWrittenOutput();
 			System.out.println(output);
 		}
