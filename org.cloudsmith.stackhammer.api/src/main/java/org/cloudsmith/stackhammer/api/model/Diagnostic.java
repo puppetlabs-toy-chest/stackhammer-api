@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Diagnostic implements Serializable {
 	public static final int ERROR = 3;
@@ -61,6 +63,8 @@ public class Diagnostic implements Serializable {
 
 	private List<Diagnostic> children;
 
+	private static final Pattern lineNumberPattern = Pattern.compile("^(\\d+).*");
+
 	public void addChild(Diagnostic child) {
 		if(severity < child.getSeverity())
 			severity = child.getSeverity();
@@ -98,6 +102,15 @@ public class Diagnostic implements Serializable {
 	 */
 	public String getIssue() {
 		return issue;
+	}
+
+	public int getLine() {
+		if(locationLabel != null) {
+			Matcher m = lineNumberPattern.matcher(locationLabel);
+			if(m.matches())
+				return Integer.parseInt(m.group(1));
+		}
+		return 0;
 	}
 
 	/**
