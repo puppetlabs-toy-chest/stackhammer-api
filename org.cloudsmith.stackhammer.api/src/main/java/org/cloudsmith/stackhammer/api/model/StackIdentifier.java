@@ -11,10 +11,8 @@
 
 package org.cloudsmith.stackhammer.api.model;
 
-public class ValidationRequest {
+public class StackIdentifier {
 	private Repository repository;
-
-	private ValidationType validationType;
 
 	private String stackName;
 
@@ -33,13 +31,6 @@ public class ValidationRequest {
 	}
 
 	/**
-	 * @return the validationType
-	 */
-	public ValidationType getValidationType() {
-		return validationType;
-	}
-
-	/**
 	 * @param repository the repository to set
 	 */
 	public void setRepository(Repository repository) {
@@ -51,12 +42,5 @@ public class ValidationRequest {
 	 */
 	public void setStackName(String stackName) {
 		this.stackName = stackName;
-	}
-
-	/**
-	 * @param validationType the validationType to set
-	 */
-	public void setValidationType(ValidationType validationType) {
-		this.validationType = validationType;
 	}
 }

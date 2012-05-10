@@ -11,9 +11,6 @@
 
 package org.cloudsmith.stackhammer.api.model;
 
-import static java.lang.String.format;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,37 +18,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Diagnostic implements Serializable {
-	public static final int ERROR = 3;
+public class Diagnostic extends MessageWithSeverity {
 
-	public static final int WARNING = 2;
-
-	public static final int INFO = 1;
-
-	public static final int OK = 0;
-
-	private static final String[] severityStrings = new String[] { "OK", "INFO", "WARNING", "ERROR" };
-
-	private static final long serialVersionUID = 4456459592694401491L;
-
-	/**
-	 * Return the severity as a string. The string &quot;UNKNOWN(&lt;severity&gt;)&quot; will
-	 * be returned if the argument represents an unknown severity.
-	 * 
-	 * @param severity
-	 * @return A string representing the severity
-	 */
-	public static String getSeverityString(int severity) {
-		return severity >= 0 && severity < severityStrings.length
-				? severityStrings[severity]
-				: format("UNKNOWN(%d)", severity);
-	}
-
-	private int severity;
+	private static final long serialVersionUID = -1645151837353215387L;
 
 	private int httpCode = 0;
-
-	private String message;
 
 	private String source;
 
@@ -66,8 +37,8 @@ public class Diagnostic implements Serializable {
 	private static final Pattern lineNumberPattern = Pattern.compile("^(\\d+).*");
 
 	public void addChild(Diagnostic child) {
-		if(severity < child.getSeverity())
-			severity = child.getSeverity();
+		if(getSeverity() < child.getSeverity())
+			setSeverity(child.getSeverity());
 		if(children == null)
 			children = new ArrayList<Diagnostic>();
 		children.add(child);
@@ -124,13 +95,6 @@ public class Diagnostic implements Serializable {
 	}
 
 	/**
-	 * @return the message
-	 */
-	public String getMessage() {
-		return message;
-	}
-
-	/**
 	 * ResourcePath is a reference to a relative or absolute file, or is empty/null if the diagnostic is not file related.
 	 * 
 	 * All diagnostic relating to files given (directly or contained) in the calls to the ValidationService will be reported with
@@ -142,17 +106,6 @@ public class Diagnostic implements Serializable {
 	 */
 	public String getResourcePath() {
 		return resourcePath;
-	}
-
-	/**
-	 * @return the severity
-	 */
-	public int getSeverity() {
-		return severity;
-	}
-
-	public String getSeverityString() {
-		return getSeverityString(getSeverity());
 	}
 
 	/**
@@ -194,24 +147,10 @@ public class Diagnostic implements Serializable {
 	}
 
 	/**
-	 * @param message the message to set
-	 */
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	/**
 	 * @param resourcePath the resourcePath to set
 	 */
 	public void setResourcePath(String resourcePath) {
 		this.resourcePath = resourcePath;
-	}
-
-	/**
-	 * @param severity the severity to set
-	 */
-	public void setSeverity(int severity) {
-		this.severity = severity;
 	}
 
 	/**
@@ -222,24 +161,18 @@ public class Diagnostic implements Serializable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder bld = new StringBuilder();
-		toString(bld, 0);
-		return bld.toString();
-	}
-
 	public void toString(StringBuilder bld, int indent) {
 		for(int idx = 0; idx < indent; ++idx)
 			bld.append(' ');
 
-		if(message == null && resourcePath == null && locationLabel == null) {
+		if(getMessage() == null && resourcePath == null && locationLabel == null) {
 			if(children == null) {
-				bld.append(getSeverityString(severity));
+				bld.append(getSeverityString());
 				return;
 			}
 		}
 		else {
-			bld.append(getSeverityString(severity));
+			bld.append(getSeverityString());
 			bld.append(':');
 
 			if(resourcePath != null) {
@@ -250,8 +183,8 @@ public class Diagnostic implements Serializable {
 				bld.append(locationLabel);
 				bld.append(':');
 			}
-			if(message != null) {
-				bld.append(message);
+			if(getMessage() != null) {
+				bld.append(getMessage());
 				bld.append(':');
 			}
 

@@ -25,15 +25,9 @@ public interface Constants {
 
 	String COMMAND_CLONE = "clone";
 
+	String COMMAND_DEPLOY = "deploy";
+
 	String COMMAND_VALIDATE = "validate";
-
-	String HEADER_CONTENT_TYPE = "Content-Type";
-
-	String HEADER_ACCEPT = "Accept";
-
-	String HEADER_AUTHORIZATION = "Authorization";
-
-	String HEADER_USER_AGENT = "User-Agent";
 
 	String AUTH_TOKEN = "token"; //$NON-NLS-1$
 

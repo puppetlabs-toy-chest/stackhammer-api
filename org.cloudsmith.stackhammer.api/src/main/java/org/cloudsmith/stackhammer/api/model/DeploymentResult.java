@@ -8,9 +8,15 @@
  * Contributors:
  *   Thomas Hallgren (Cloudsmith Inc.) - initial API and implementation
  */
-
 package org.cloudsmith.stackhammer.api.model;
 
-public enum ValidationType {
-	SEMANTIC, DRY_RUN
+import java.util.List;
+
+/**
+ * The result of a Validation is a base-64 encoded string representing
+ * the bytes of an SVG image which in turn represents the validation
+ * graph.
+ */
+public class DeploymentResult extends ResultWithDiagnostic<List<HostResult>> {
+	private static final long serialVersionUID = 1626685805862697038L;
 }

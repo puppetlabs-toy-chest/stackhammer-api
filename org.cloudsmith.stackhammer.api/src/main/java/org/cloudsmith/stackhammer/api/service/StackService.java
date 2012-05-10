@@ -13,15 +13,22 @@ package org.cloudsmith.stackhammer.api.service;
 import java.io.IOException;
 
 import org.cloudsmith.stackhammer.api.client.StackHammerClient;
+import org.cloudsmith.stackhammer.api.model.DeploymentResult;
 import org.cloudsmith.stackhammer.api.model.Repository;
-import org.cloudsmith.stackhammer.api.model.ValidationRequest;
+import org.cloudsmith.stackhammer.api.model.StackIdentifier;
 import org.cloudsmith.stackhammer.api.model.ValidationResult;
-import org.cloudsmith.stackhammer.api.model.ValidationType;
 
 public class StackService extends StackHammerService {
 
 	public StackService(StackHammerClient client) {
 		super(client);
+	}
+
+	public DeploymentResult deployStack(Repository repository, String stackName) throws IOException {
+		StackIdentifier request = new StackIdentifier();
+		request.setRepository(repository);
+		request.setStackName(stackName);
+		return getClient().post(getCommandURI(COMMAND_DEPLOY), request, DeploymentResult.class);
 	}
 
 	@Override
@@ -30,10 +37,9 @@ public class StackService extends StackHammerService {
 	}
 
 	public ValidationResult validateStack(Repository repository, String stackName) throws IOException {
-		ValidationRequest request = new ValidationRequest();
+		StackIdentifier request = new StackIdentifier();
 		request.setRepository(repository);
 		request.setStackName(stackName);
-		request.setValidationType(ValidationType.SEMANTIC);
 		return getClient().post(getCommandURI(COMMAND_VALIDATE), request, ValidationResult.class);
 	}
 }
