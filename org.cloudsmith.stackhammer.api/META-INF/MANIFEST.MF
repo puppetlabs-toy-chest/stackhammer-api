@@ -11,4 +11,6 @@ Export-Package: org.cloudsmith.stackhammer.api,
  org.cloudsmith.stackhammer.api.service,
  org.cloudsmith.stackhammer.api.util
 Require-Bundle: com.google.inject,
- com.google.gson
+ com.google.gson,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore

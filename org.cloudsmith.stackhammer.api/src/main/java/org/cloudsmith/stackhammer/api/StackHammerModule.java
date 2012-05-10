@@ -11,12 +11,8 @@
 
 package org.cloudsmith.stackhammer.api;
 
-import org.cloudsmith.stackhammer.api.client.StackHammerConnectionFactory;
-import org.cloudsmith.stackhammer.api.util.UrlUtils.UrlConnectionFactory;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
 /**
@@ -77,17 +73,5 @@ public class StackHammerModule extends AbstractModule {
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named("StackHammer credentials")).toInstance(credentials);
 		bind(String.class).annotatedWith(Names.named("StackHammer baseUri")).toInstance(baseUri);
-	}
-
-	/**
-	 * Subclasses may implement this method to provide an alternative connection factory. The method
-	 * is primarily intended to be overriden by test frameworks where a fake connection might be
-	 * desirable.
-	 * 
-	 * @param bind
-	 */
-	@Provides
-	protected StackHammerConnectionFactory provideStackHammerConnectionFactory() {
-		return new UrlConnectionFactory();
 	}
 }

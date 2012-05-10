@@ -17,27 +17,31 @@
  */
 package org.cloudsmith.stackhammer.api.client;
 
-import static java.net.HttpURLConnection.HTTP_ACCEPTED;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CONFLICT;
-import static java.net.HttpURLConnection.HTTP_CREATED;
-import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
-import static java.net.HttpURLConnection.HTTP_GONE;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.cloudsmith.stackhammer.api.Constants;
 import org.cloudsmith.stackhammer.api.model.Diagnostic;
 
@@ -51,17 +55,7 @@ import com.google.inject.name.Named;
  * Class responsible for all request and response processing
  */
 public class StackHammerClient implements Constants {
-	private static final String METHOD_GET = "GET"; //$NON-NLS-1$
-
-	private static final String METHOD_PUT = "PUT"; //$NON-NLS-1$
-
-	private static final String METHOD_POST = "POST"; //$NON-NLS-1$
-
-	private static final String METHOD_DELETE = "DELETE"; //$NON-NLS-1$
-
 	private static final String USER_AGENT = "StackHammerJava/1.0.0"; //$NON-NLS-1$
-
-	private static final int HTTP_UNPROCESSABLE_ENTITY = 422;
 
 	private final static Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -76,70 +70,37 @@ public class StackHammerClient implements Constants {
 
 	private final Gson gson = gsonBuilder.create();
 
-	private final StackHammerConnectionFactory connectionFactory;
-
 	private final String credentials;
 
 	private String userAgent;
 
 	private int bufferSize = 8192;
 
+	private final HttpClient httpClient;
+
 	@Inject
-	public StackHammerClient(
-		// @fmtOff
-		@Named("StackHammer baseUri") String baseUri,
-		@Named("StackHammer credentials") String credentials,
-		StackHammerConnectionFactory connectionFactory)	{
-		// @fmtOn
+	public StackHammerClient(@Named("StackHammer baseUri") String baseUri,
+			@Named("StackHammer credentials") String credentials) {
 		this.baseUri = baseUri;
 		this.credentials = credentials == null
 				? null
 				: (AUTH_TOKEN + ' ' + credentials);
-		this.connectionFactory = connectionFactory;
+
+		httpClient = new DefaultHttpClient();
+		try {
+			httpClient.getConnectionManager().getSchemeRegistry().register(
+				new Scheme("https", 443, new SSLSocketFactory(new TrustSelfSignedStrategy())));
+		}
+		catch(Exception e) {
+			// let's try without that ...
+		}
 	}
 
-	protected StackHammerConnection configureRequest(final StackHammerConnection request) {
+	protected void configureRequest(final HttpRequestBase request) {
 		if(credentials != null)
-			request.setRequestProperty(HEADER_AUTHORIZATION, credentials);
-		request.setRequestProperty(HEADER_USER_AGENT, userAgent);
-		request.setRequestProperty(HEADER_ACCEPT, "application/vnd.stackhammer.beta+json"); //$NON-NLS-1$
-		return request;
-	}
-
-	/**
-	 * Create connection to URI
-	 * 
-	 * @param uri
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createConnection(String uri) throws IOException {
-		return connectionFactory.createConnection(new URL(createUri(uri)));
-	}
-
-	/**
-	 * Create connection to URI
-	 * 
-	 * @param uri
-	 * @param method
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createConnection(String uri, String method) throws IOException {
-		StackHammerConnection connection = createConnection(uri);
-		connection.setRequestMethod(method);
-		return configureRequest(connection);
-	}
-
-	/**
-	 * Create a DELETE request connection to the URI
-	 * 
-	 * @param uri
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createDelete(String uri) throws IOException {
-		return createConnection(uri, METHOD_DELETE);
+			request.addHeader(HttpHeaders.AUTHORIZATION, credentials);
+		request.addHeader(HttpHeaders.USER_AGENT, userAgent);
+		request.addHeader(HttpHeaders.ACCEPT, "application/vnd.stackhammer.beta+json"); //$NON-NLS-1$
 	}
 
 	/**
@@ -171,39 +132,6 @@ public class StackHammerClient implements Constants {
 	}
 
 	/**
-	 * Create a GET request connection to the URI
-	 * 
-	 * @param uri
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createGet(String uri) throws IOException {
-		return createConnection(uri, METHOD_GET);
-	}
-
-	/**
-	 * Create a POST request connection to the URI
-	 * 
-	 * @param uri
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createPost(String uri) throws IOException {
-		return createConnection(uri, METHOD_POST);
-	}
-
-	/**
-	 * Create a PUT request connection to the URI
-	 * 
-	 * @param uri
-	 * @return connection
-	 * @throws IOException
-	 */
-	protected StackHammerConnection createPut(String uri) throws IOException {
-		return createConnection(uri, METHOD_PUT);
-	}
-
-	/**
 	 * Create full URI from path
 	 * 
 	 * @param path
@@ -214,91 +142,17 @@ public class StackHammerClient implements Constants {
 	}
 
 	/**
-	 * Delete resource at URI. This method will throw an {@link IOException} when the response status is not a 204 (No Content).
-	 * 
-	 * @param uri
-	 * @throws IOException
-	 */
-	public void delete(String uri) throws IOException {
-		delete(uri, null);
-	}
-
-	/**
-	 * Delete resource at URI. This method will throw an {@link IOException} when the response status is not a 204 (No Content).
-	 * 
-	 * @param uri
-	 * @param params
-	 * @throws IOException
-	 */
-	public void delete(final String uri, final Object params) throws IOException {
-		StackHammerConnection request = createDelete(uri);
-		if(params != null)
-			sendParams(request, params);
-		final int code = request.getResponseCode();
-		if(!isEmpty(code))
-			throw new RequestException(parseError(code, getStream(request)), code);
-	}
-
-	/**
-	 * Get response from URI and bind to specified type
-	 * 
-	 * @param request
-	 * @return response
-	 * @throws IOException
-	 */
-	public <V> StackHammerResponse<V> get(StackHammerRequest<V> request) throws IOException {
-		StackHammerConnection httpRequest = createGet(request.generateUri());
-		String accept = request.getResponseContentType();
-		if(accept != null)
-			httpRequest.setRequestProperty(HEADER_ACCEPT, accept);
-		final int code = httpRequest.getResponseCode();
-		if(isOk(code))
-			return new StackHammerResponse<V>(httpRequest, getBody(request, getStream(httpRequest)));
-		if(isEmpty(code))
-			return new StackHammerResponse<V>(httpRequest, null);
-		throw createException(getStream(httpRequest), code, httpRequest.getResponseMessage());
-	}
-
-	/**
-	 * Get body from response inputs stream
-	 * 
-	 * @param request
-	 * @param stream
-	 * @return parsed body
-	 * @throws IOException
-	 */
-	protected <V> V getBody(StackHammerRequest<V> request, InputStream stream) throws IOException {
-		Class<V> type = request.getType();
-		return type == null
-				? null
-				: parseJson(stream, type);
-	}
-
-	/**
 	 * Get stream from request
 	 * 
 	 * @param request
 	 * @return stream
 	 * @throws IOException
 	 */
-	protected InputStream getStream(StackHammerConnection request) throws IOException {
-		if(request.getResponseCode() < HTTP_BAD_REQUEST)
-			return request.getInputStream();
+	protected InputStream getStream(HttpEntity entity) throws IOException {
+		if(entity == null)
+			return null;
 
-		InputStream stream = request.getErrorStream();
-		return stream != null
-				? stream
-				: request.getInputStream();
-	}
-
-	/**
-	 * Is the response empty?
-	 * 
-	 * @param code
-	 * @return true if empty, false otherwise
-	 */
-	protected boolean isEmpty(final int code) {
-		return HTTP_NO_CONTENT == code;
+		return entity.getContent();
 	}
 
 	/**
@@ -309,14 +163,14 @@ public class StackHammerClient implements Constants {
 	 */
 	protected boolean isError(final int code) {
 		switch(code) {
-			case HTTP_BAD_REQUEST:
-			case HTTP_UNAUTHORIZED:
-			case HTTP_FORBIDDEN:
-			case HTTP_NOT_FOUND:
-			case HTTP_CONFLICT:
-			case HTTP_GONE:
-			case HTTP_UNPROCESSABLE_ENTITY:
-			case HTTP_INTERNAL_ERROR:
+			case HttpStatus.SC_BAD_REQUEST:
+			case HttpStatus.SC_UNAUTHORIZED:
+			case HttpStatus.SC_FORBIDDEN:
+			case HttpStatus.SC_NOT_FOUND:
+			case HttpStatus.SC_CONFLICT:
+			case HttpStatus.SC_GONE:
+			case HttpStatus.SC_UNPROCESSABLE_ENTITY:
+			case HttpStatus.SC_INTERNAL_SERVER_ERROR:
 				return true;
 			default:
 				return false;
@@ -331,9 +185,9 @@ public class StackHammerClient implements Constants {
 	 */
 	protected boolean isOk(final int code) {
 		switch(code) {
-			case HTTP_OK:
-			case HTTP_CREATED:
-			case HTTP_ACCEPTED:
+			case HttpStatus.SC_OK:
+			case HttpStatus.SC_CREATED:
+			case HttpStatus.SC_ACCEPTED:
 				return true;
 			default:
 				return false;
@@ -411,7 +265,8 @@ public class StackHammerClient implements Constants {
 	 * @throws IOException
 	 */
 	public <V> V post(final String uri, final Object params, final Class<V> type) throws IOException {
-		StackHammerConnection request = createPost(uri);
+		HttpPost request = new HttpPost(createUri(uri));
+		configureRequest(request);
 		return sendJson(request, params, type);
 	}
 
@@ -436,44 +291,36 @@ public class StackHammerClient implements Constants {
 	 * @throws IOException
 	 */
 	public <V> V put(final String uri, final Object params, final Class<V> type) throws IOException {
-		StackHammerConnection request = createPut(uri);
+		HttpPut request = new HttpPut(createUri(uri));
+		configureRequest(request);
 		return sendJson(request, params, type);
 	}
 
-	private <V> V sendJson(final StackHammerConnection request, final Object params, final Class<V> type)
+	private <V> V sendJson(final HttpEntityEnclosingRequestBase request, final Object params, final Class<V> type)
 			throws IOException {
-		if(params != null)
-			sendParams(request, params);
-		final int code = request.getResponseCode();
-		if(isOk(code)) {
-			if(type == null)
-				return null;
-			return parseJson(getStream(request), type);
-		}
-		if(isEmpty(code))
-			return null;
-		throw createException(getStream(request), code, request.getResponseMessage());
-	}
 
-	/**
-	 * Send parameters to output stream of request
-	 * 
-	 * @param request
-	 * @param params
-	 * @throws IOException
-	 */
-	protected void sendParams(StackHammerConnection request, Object params) throws IOException {
-		request.setDoOutput(true);
-		request.setRequestProperty(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON + "; charset=" + UTF_8.name()); //$NON-NLS-1$
-		byte[] data = toJson(params).getBytes(UTF_8);
-		request.setFixedLengthStreamingMode(data.length);
-		BufferedOutputStream output = new BufferedOutputStream(request.getOutputStream(), bufferSize);
-		try {
-			output.write(data);
+		ResponseHandler<V> responseHandler = new ResponseHandler<V>() {
+			@Override
+			public V handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+				StatusLine statusLine = response.getStatusLine();
+				int code = statusLine.getStatusCode();
+				if(code >= 300)
+					throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+
+				HttpEntity entity = response.getEntity();
+				if(isOk(code))
+					return parseJson(getStream(entity), type);
+
+				throw createException(getStream(entity), code, statusLine.getReasonPhrase());
+			}
+		};
+
+		if(params != null) {
+			request.addHeader(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_JSON + "; charset=" + UTF_8.name()); //$NON-NLS-1$
+			byte[] data = toJson(params).getBytes(UTF_8);
+			request.setEntity(new ByteArrayEntity(data));
 		}
-		finally {
-			output.close();
-		}
+		return httpClient.execute(request, responseHandler);
 	}
 
 	/**
