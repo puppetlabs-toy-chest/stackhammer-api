@@ -20,10 +20,21 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 import org.cloudsmith.stackhammer.api.client.StackHammerConnection;
 import org.cloudsmith.stackhammer.api.client.StackHammerConnectionFactory;
@@ -95,6 +106,43 @@ public abstract class UrlUtils {
 	public static class UrlConnectionFactory implements StackHammerConnectionFactory {
 		@Override
 		public StackHammerConnection createConnection(URL url) throws IOException {
+			// TODO: This is an extremely ugly workaround and it should be removed!!!
+			if("https".equalsIgnoreCase(url.getProtocol()) &&
+					"stackservice-staging.elasticbeanstalk.com".equals(url.getHost())) {
+				SSLSocketFactory originalSocketFactor = HttpsURLConnection.getDefaultSSLSocketFactory();
+				HostnameVerifier originalHostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
+				try {
+					HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+						public boolean verify(String hostname, SSLSession session) {
+							return true;
+						}
+					});
+
+					SSLContext context = SSLContext.getInstance("TLS");
+					context.init(null, new X509TrustManager[] { new X509TrustManager() {
+						public void checkClientTrusted(X509Certificate[] chain, String authType)
+								throws CertificateException {
+						}
+
+						public void checkServerTrusted(X509Certificate[] chain, String authType)
+								throws CertificateException {
+						}
+
+						public X509Certificate[] getAcceptedIssuers() {
+							return new X509Certificate[0];
+						}
+					} }, new SecureRandom());
+					HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+					return new UrlConnection((HttpURLConnection) url.openConnection());
+				}
+				catch(GeneralSecurityException e) {
+					throw new RuntimeException(e);
+				}
+				finally {
+					HttpsURLConnection.setDefaultHostnameVerifier(originalHostnameVerifier);
+					HttpsURLConnection.setDefaultSSLSocketFactory(originalSocketFactor);
+				}
+			}
 			return new UrlConnection((HttpURLConnection) url.openConnection());
 		}
 	}
