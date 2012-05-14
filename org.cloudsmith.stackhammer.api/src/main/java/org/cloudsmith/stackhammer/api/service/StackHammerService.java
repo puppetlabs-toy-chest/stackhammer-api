@@ -10,10 +10,12 @@
  */
 package org.cloudsmith.stackhammer.api.service;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.cloudsmith.stackhammer.api.Constants;
 import org.cloudsmith.stackhammer.api.client.StackHammerClient;
+import org.cloudsmith.stackhammer.api.model.PollResult;
 
 public abstract class StackHammerService implements Constants {
 	@SuppressWarnings("unchecked")
@@ -47,5 +49,9 @@ public abstract class StackHammerService implements Constants {
 
 	protected String getCommandURI(String command) {
 		return '/' + getCommandGroup() + '/' + command;
+	}
+
+	public PollResult pollJob(String jobIdentifier) throws IOException {
+		return getClient().get('/' + COMMAND_POLL_JOB + '/' + jobIdentifier, null, PollResult.class);
 	}
 }

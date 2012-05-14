@@ -27,15 +27,15 @@ public interface Constants {
 
 	String COMMAND_DEPLOY = "deploy";
 
+	String COMMAND_DEPLOY_RESULT = "deployResult";
+
+	String COMMAND_POLL_JOB = "pollJob";
+
 	String COMMAND_VALIDATE = "validate";
 
 	String AUTH_TOKEN = "token"; //$NON-NLS-1$
 
-	String PARAM_NAME = "name";
-
-	String PARAM_REPOSITORY = "repository";
-
-	String PARAM_PROVIDER = "provider";
+	String PARAM_JOB_IDENTIFIER = "jobIdentifier";
 
 	String CONTENT_TYPE_JSON = "application/json"; //$NON-NLS-1$
 

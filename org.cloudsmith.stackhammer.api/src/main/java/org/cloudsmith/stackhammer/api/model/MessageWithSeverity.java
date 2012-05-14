@@ -18,15 +18,19 @@ import java.io.Serializable;
 public class MessageWithSeverity implements Serializable {
 	private static final long serialVersionUID = 3125174260505451357L;
 
-	public static final int ERROR = 3;
+	public static final int FATAL = 5;
 
-	public static final int WARNING = 2;
+	public static final int ERROR = 4;
 
-	public static final int INFO = 1;
+	public static final int WARNING = 3;
+
+	public static final int INFO = 2;
+
+	public static final int DEBUG = 1;
 
 	public static final int OK = 0;
 
-	private static final String[] severityStrings = new String[] { "OK", "INFO", "WARNING", "ERROR" };
+	private static final String[] severityStrings = new String[] { "OK", "DEBUG", "INFO", "WARNING", "ERROR", "FATAL" };
 
 	/**
 	 * Return the severity as a string. The string &quot;UNKNOWN(&lt;severity&gt;)&quot; will

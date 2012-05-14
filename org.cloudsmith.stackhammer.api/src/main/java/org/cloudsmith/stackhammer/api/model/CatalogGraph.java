@@ -12,19 +12,20 @@
 package org.cloudsmith.stackhammer.api.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * The HostResult represents the result of deploying a host. It contains
- * a list of {@link LogEntry}s and a base-64 encoded string representing
- * the bytes of an SVG image which in turn represents the catalog graph.
+ * The CatalogGraph represents the result of deploying a host. It contains
+ * a base-64 encoded string representing the bytes of an SVG image which in turn
+ * represents the graph.
  */
-public class HostResult implements Serializable {
+public class CatalogGraph implements Serializable {
 	private static final long serialVersionUID = 5189972109353893244L;
 
-	private String catalogGraph;
+	private String nodeName;
 
-	private List<LogEntry> logEntries;
+	private String instanceID;
+
+	private String catalogGraph;
 
 	/**
 	 * @return the catalogGraph
@@ -33,11 +34,12 @@ public class HostResult implements Serializable {
 		return catalogGraph;
 	}
 
-	/**
-	 * @return the logEntries
-	 */
-	public List<LogEntry> getLogEntries() {
-		return logEntries;
+	public String getInstanceID() {
+		return instanceID;
+	}
+
+	public String getNodeName() {
+		return nodeName;
 	}
 
 	/**
@@ -47,10 +49,11 @@ public class HostResult implements Serializable {
 		this.catalogGraph = catalogGraph;
 	}
 
-	/**
-	 * @param logEntries the logEntries to set
-	 */
-	public void setLogEntries(List<LogEntry> logEntries) {
-		this.logEntries = logEntries;
+	public void setInstanceID(String instanceID) {
+		this.instanceID = instanceID;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
 	}
 }

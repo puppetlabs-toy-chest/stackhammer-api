@@ -22,26 +22,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.cloudsmith.stackhammer.api.Constants;
 import org.cloudsmith.stackhammer.api.model.Diagnostic;
 
@@ -96,6 +106,14 @@ public class StackHammerClient implements Constants {
 		}
 	}
 
+	private void assignJSONContent(HttpEntityEnclosingRequestBase request, Object params) {
+		if(params != null) {
+			request.addHeader(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_JSON + "; charset=" + UTF_8.name()); //$NON-NLS-1$
+			byte[] data = toJson(params).getBytes(UTF_8);
+			request.setEntity(new ByteArrayEntity(data));
+		}
+	}
+
 	protected void configureRequest(final HttpRequestBase request) {
 		if(credentials != null)
 			request.addHeader(HttpHeaders.AUTHORIZATION, credentials);
@@ -139,6 +157,56 @@ public class StackHammerClient implements Constants {
 	 */
 	protected String createUri(final String path) {
 		return baseUri + path;
+	}
+
+	private <V> V executeRequest(final HttpRequestBase request, final Class<V> type) throws IOException {
+
+		ResponseHandler<V> responseHandler = new ResponseHandler<V>() {
+			@Override
+			public V handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+				StatusLine statusLine = response.getStatusLine();
+				int code = statusLine.getStatusCode();
+				if(code >= 300)
+					throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+
+				HttpEntity entity = response.getEntity();
+				if(isOk(code))
+					return parseJson(getStream(entity), type);
+
+				throw createException(getStream(entity), code, statusLine.getReasonPhrase());
+			}
+		};
+
+		return httpClient.execute(request, responseHandler);
+	}
+
+	/**
+	 * @param uri
+	 * @param params
+	 * @param type
+	 * @return
+	 */
+	public <V> V get(String uriStr, Map<String, String> params, Class<V> type) throws IOException {
+		URI uri;
+		try {
+			uri = new URI(createUri(uriStr));
+			if(params != null && !params.isEmpty()) {
+				List<NameValuePair> queryParams = new ArrayList<NameValuePair>(params.size());
+				for(Map.Entry<String, String> param : params.entrySet())
+					queryParams.add(new BasicNameValuePair(param.getKey(), param.getValue()));
+
+				uri = URIUtils.createURI(
+					uri.getScheme(), uri.getHost(), uri.getPort(), uri.getPath(),
+					URLEncodedUtils.format(queryParams, UTF_8.name()), uri.getFragment());
+			}
+		}
+		catch(URISyntaxException e) {
+			throw new IllegalArgumentException(e);
+		}
+
+		HttpGet request = new HttpGet(uri);
+		configureRequest(request);
+		return executeRequest(request, type);
 	}
 
 	/**
@@ -267,7 +335,8 @@ public class StackHammerClient implements Constants {
 	public <V> V post(final String uri, final Object params, final Class<V> type) throws IOException {
 		HttpPost request = new HttpPost(createUri(uri));
 		configureRequest(request);
-		return sendJson(request, params, type);
+		assignJSONContent(request, params);
+		return executeRequest(request, type);
 	}
 
 	/**
@@ -293,34 +362,8 @@ public class StackHammerClient implements Constants {
 	public <V> V put(final String uri, final Object params, final Class<V> type) throws IOException {
 		HttpPut request = new HttpPut(createUri(uri));
 		configureRequest(request);
-		return sendJson(request, params, type);
-	}
-
-	private <V> V sendJson(final HttpEntityEnclosingRequestBase request, final Object params, final Class<V> type)
-			throws IOException {
-
-		ResponseHandler<V> responseHandler = new ResponseHandler<V>() {
-			@Override
-			public V handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-				StatusLine statusLine = response.getStatusLine();
-				int code = statusLine.getStatusCode();
-				if(code >= 300)
-					throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
-
-				HttpEntity entity = response.getEntity();
-				if(isOk(code))
-					return parseJson(getStream(entity), type);
-
-				throw createException(getStream(entity), code, statusLine.getReasonPhrase());
-			}
-		};
-
-		if(params != null) {
-			request.addHeader(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_JSON + "; charset=" + UTF_8.name()); //$NON-NLS-1$
-			byte[] data = toJson(params).getBytes(UTF_8);
-			request.setEntity(new ByteArrayEntity(data));
-		}
-		return httpClient.execute(request, responseHandler);
+		assignJSONContent(request, params);
+		return executeRequest(request, type);
 	}
 
 	/**

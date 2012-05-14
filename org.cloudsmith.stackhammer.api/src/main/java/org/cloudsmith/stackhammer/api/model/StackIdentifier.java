@@ -11,7 +11,11 @@
 
 package org.cloudsmith.stackhammer.api.model;
 
-public class StackIdentifier {
+import java.io.Serializable;
+
+public class StackIdentifier implements Serializable {
+	private static final long serialVersionUID = 814031679981648350L;
+
 	private Repository repository;
 
 	private String stackName;
