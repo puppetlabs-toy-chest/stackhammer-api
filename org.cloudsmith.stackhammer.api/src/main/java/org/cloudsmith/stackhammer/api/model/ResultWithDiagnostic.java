@@ -11,6 +11,8 @@
 
 package org.cloudsmith.stackhammer.api.model;
 
+import java.io.PrintStream;
+
 public class ResultWithDiagnostic<T> extends Diagnostic {
 	private static final long serialVersionUID = 1618870489419505392L;
 
@@ -21,6 +23,16 @@ public class ResultWithDiagnostic<T> extends Diagnostic {
 	 */
 	public T getResult() {
 		return result;
+	}
+
+	/**
+	 * Print the diagnostic children as a log output on the given <code>logger</code>
+	 * 
+	 * @param logger
+	 */
+	public void log(PrintStream logger) {
+		for(Diagnostic child : getChildren())
+			logger.println(child);
 	}
 
 	/**

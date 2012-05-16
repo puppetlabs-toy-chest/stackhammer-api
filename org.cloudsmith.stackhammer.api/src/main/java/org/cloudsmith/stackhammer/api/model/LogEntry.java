@@ -15,7 +15,7 @@ package org.cloudsmith.stackhammer.api.model;
  * An entry describing an event in time
  */
 public class LogEntry extends MessageWithSeverity {
-	private static final long serialVersionUID = 7954938050835971411L;
+	private static final long serialVersionUID = 9170716483071240390L;
 
 	private long timestamp;
 
@@ -25,7 +25,14 @@ public class LogEntry extends MessageWithSeverity {
 
 	private String exceptionMessage;
 
-	private String stackTrace;
+	private String details;
+
+	/**
+	 * Stack trace if this entry contains exception information
+	 */
+	public String getDetails() {
+		return details;
+	}
 
 	/**
 	 * The exception message if this entry contains exception
@@ -51,17 +58,14 @@ public class LogEntry extends MessageWithSeverity {
 	}
 
 	/**
-	 * Stack trace if this entry contains exception information
-	 */
-	public String getStackTrace() {
-		return stackTrace;
-	}
-
-	/**
 	 * Millisecond timestamp of when this entry was generated
 	 */
 	public long getTimestamp() {
 		return timestamp;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
 	}
 
 	public void setExceptionMessage(String exceptionMessage) {
@@ -74,10 +78,6 @@ public class LogEntry extends MessageWithSeverity {
 
 	public void setPhysicalOrigin(String physicalOrigin) {
 		this.physicalOrigin = physicalOrigin;
-	}
-
-	public void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
 	}
 
 	public void setTimestamp(long timestamp) {

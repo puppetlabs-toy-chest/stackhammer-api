@@ -18,7 +18,7 @@ import java.util.List;
  * Result of pinging an asynchronously executing job
  */
 public class PollResult implements Serializable {
-	private static final long serialVersionUID = -216365331567486765L;
+	private static final long serialVersionUID = 3363361329096042952L;
 
 	private JobState jobState;
 
