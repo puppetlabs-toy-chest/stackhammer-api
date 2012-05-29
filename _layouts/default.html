@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <title>{{ page.title }}</title>
+
+  <link rel="stylesheet" href="http://cloudsmith.github.com/stackhammer-api/css/common.css">
+  <link rel="stylesheet" href="http://cloudsmith.github.com/stackhammer-api/css/button.css">
+
+  <!-- Google API key, and jQuery -->
+  <script
+      src="https://www.google.com/jsapi?key=ABQIAAAA8aM3VGZQODmQfAua3HB0rxQGgPkOqPhTmFbpEhG8mIDO1JQkhhSVo4DnWMbwOAGg77xvwWa2HVQE7g"
+      type="text/javascript"
+  ></script>
+  <script
+       src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"
+  ></script>
+
+</head>
+<body>
+<!-- Initialize button dynamics -->
+<script>
+$(document).ready(function() {
+  jQuery('a.minibutton').bind({
+    mousedown: function() {
+      jQuery(this).addClass('mousedown');
+    },
+    blur: function() {
+      jQuery(this).removeClass('mousedown');
+    },
+    mouseup: function() {
+      jQuery(this).removeClass('mousedown');
+    },
+    mouseleave: function() {
+      jQuery(this).removeClass('mousedown');
+    },
+    mouseout: function() {
+      jQuery(this).removeClass('mousedown');
+    }
+  });
+});
+</script>
+<div id="container">
+    <div class="header">
+        <div class="download">
+            <!-- example simple button
+            <a href="javascript:;"
+                class="minibutton"><span>Basic Button</span></a> -->
+            <!-- download button with icon -->
+            <a href="https://github.com/cloudsmith/stackhammer-api/downloads"
+             class="minibutton btn-download"
+            ><span><span class="icon"></span>Download Geppetto</span></a>
+        </div>
+
+            <h1><a href="http://cloudsmith.github.com/stackhammer-api/index.html">stackhammer-api</a>
+          <span class="small">by <a href="http://www.cloudsmith.com">cloudsmith</a></span></h1>
+
+        <div class="description">
+          an integrated toolset for developing puppet modules and manifests
+        </div>
+    </div>
+
+    <div id="columns">
+    <div class="Main">
+        {{ content }}
+    </div>
+
+    <div class="Sidebar">
+        <div class="title">
+            <h2>PLATFORMS</h2>
+        </div>
+            <ul>
+                <li class="nobullet">Available for:</li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/downloads">Linux</a></li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/downloads">OSX</a></li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/downloads">Win32</a></li>
+            </ul>
+        <div class="title">
+            <h2>INSTALL</h2>
+        </div>
+            <ul>
+                <li class="nobullet">To install the packaged and ready-to-run Geppetto:</li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/downloads">Download</a></li>
+                <li>Unzip</li>
+                <li>Run</li>
+                <li class="nobullet"><br/>See <a href="http://cloudsmith.github.com/stackhammer-api/faq.html"
+                    >FAQ</a> for other options</li>
+            </ul>
+        <div class="title">
+            <h2>LICENSE</h2>
+        </div>
+            <p>Apache end EPL</p>
+        <div class="title">
+            <h2>CONTACT</h2>
+        </div>
+            <ul>
+                <li><a href="https://groups.google.com/group/puppet-geppetto?hl=en"
+                    >Google Group (web)</a></li>
+                <li><a href="http://dir.gmane.org/gmane.comp.sysutils.puppet.geppetto"
+                    >Google Group (nntp)</a></li>
+                <li><a href="irc://irc.freenode.net/#geppetto"
+                    >IRC</a></li>
+            </ul>
+        <div class="title">
+            <h2>PROJECT</h2>
+        </div>
+            <ul>
+                <li><a href="http://cloudsmith.github.com/stackhammer-api/faq.html">FAQ</a></li>
+                <li><a href="http://github.com/cloudsmith/stackhammer-api"
+                    >stackhammer-api @ GitHub</a></li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/wiki"
+                    >Wiki</a></li>
+                <li><a href="https://github.com/cloudsmith/stackhammer-api/issues"
+                    >Review or log an issue</a></li>
+            </ul>
+    </div>
+    </div>
+    <div id="footer">
+      <span class="copyright">© 2012 Cloudsmith Inc.</span>
+    </div>
+
+  </div>
+</body>
+</html>

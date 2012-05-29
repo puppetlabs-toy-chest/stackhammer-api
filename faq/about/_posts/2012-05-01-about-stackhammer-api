@@ -1,0 +1,8 @@
+---
+title: What is Stackhammer-api?
+layout: post
+date: 2012-05-01 
+---
+Stackhammer-api is a Java implementation of a restful API to communicate with the Cloudsmith Stackhammer
+service. The project also contains the documentation for the restful API. 
+

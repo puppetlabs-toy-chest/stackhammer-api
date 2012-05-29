@@ -1,0 +1,146 @@
+---
+layout: default
+title: Stackhammer-api FAQ
+---
+<div class="Postheader"><h1>Stackhammer-api FAQ</h1></div>
+<div class="FaqToc">
+<ul>
+    <li class="Faqcategory"><a href="#about">About</a></li>
+        <ul>
+        {%for post in site.categories.about reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+    <li class="Faqcategory"><a href="#contact">Contact</a></li>
+        <ul>
+        {%for post in site.categories.contact reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+    <li class="Faqcategory"><a href="#install">Installation</a></li>
+        <ul>
+        {%for post in site.categories.install reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+    <li class="Faqcategory"><a href="#demo">Demos, Tutorials, Help</a></li>
+        <ul>
+        {%for post in site.categories.demos reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+    <li class="Faqcategory"><a href="#howto">How do I...?</a></li>
+        <ul>
+        {%for post in site.categories.howto reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+    <li class="Faqcategory"><a href="#troubleshoot">Troubleshooting</a></li>
+        <ul>
+        {%for post in site.categories.troubleshoot reversed %}
+            <li><a href="#{{post.id}}">{{ post.title }}</a></li>
+        {%endfor%}
+        </ul>
+</ul>
+</div>
+<div id="posts">
+    <div class="Faqcategory">
+    <h1><a name="about"></a>About</h1>
+    </div>
+    {%for post in site.categories.about reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+    <div class="Faqcategory">
+    <h1><a name="contact"></a>Contact</h1>
+    </div>
+    {%for post in site.categories.contact reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+    <div class="Faqcategory">
+    <h1><a name="install"></a>Installation</h1>
+    </div>
+    {%for post in site.categories.install reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+    <div class="Faqcategory">
+    <h1><a name="demo"></a>Demos, Tutorial, and Help</h1>
+    </div>
+    {%for post in site.categories.demos reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+    <div class="Faqcategory">
+    <h1><a name="troubleshoot"></a>How do I...?</h1>
+    </div>
+    {%for post in site.categories.howto reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+
+    <div class="Faqcategory">
+    <h1><a name="troubleshoot"></a>Troubleshooting</h1>
+    </div>
+    {%for post in site.categories.troubleshoot reversed %}
+        <div class="Faq">
+            <div class="Faqheader">
+                <h1><a name="{{ post.id }}"></a>{{ post.title }}</h1>
+                <span class="Faqdate">{{ post.date | date_to_string}}</span>
+            </div>
+            <div class="Faqcontent">
+                {{ post.content }}
+            </div>
+            <div class="Faqfooter">
+            </div>
+        </div>
+    {% endfor %} 
+
+</div>
+

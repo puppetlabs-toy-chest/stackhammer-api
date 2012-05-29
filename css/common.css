@@ -1,0 +1,223 @@
+body {
+    margin-top: 0px;
+    padding-top: 0px;
+    font-family:  Helvetica, Arial, FreeSans, san-serif;
+    color: #747575;
+    font-size:12px;
+    background-color: white;
+}
+#container {
+    margin: 0 auto;
+    padding: 0;
+    width: 924px;
+    height: 100%;
+    overflow: auto;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0pt 0pt 24px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+}
+#columns {
+    background-color: #eff0ef;
+    height: 100%;
+    overflow: auto;
+}
+.header {
+    background-color: white;
+    height: 100px;
+    padding-top: 20px;
+    padding-left:30px;
+    padding-right:15px;
+}
+.Main {
+    padding-left: 30px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    width: 655px;
+    float:left;
+}
+.Sidebar {
+    width: 21%;
+    height: 100%;
+    float:right;
+    padding-left:8px;
+    margin-right:15px;
+}
+.Sidebar .title {
+    width: 100%;
+    border-bottom: 2px solid #62c2d8;
+    margin:0px;
+    padding: 0px;
+}
+.Sidebar h2 {
+    color: #007baa;
+    margin-bottom:0px;
+}
+.Sidebar li{
+    margin-left:-25px;
+}
+.header h1 { 
+    font-size: 3.8em; 
+    color: #240c0a; 
+    margin-bottom: 0px;
+    margin-top:0px;
+
+}
+h1 .small {
+    font-size: 0.4em;
+}
+h1 a {
+    text-decoration: none
+}
+h2 { 
+    font-size: 14px; 
+    color: #4c4c4c; 
+}
+h3 {
+    font-size: 12px;
+    text-align: center; 
+    color: #4c4c4c; 
+}
+li.nobullet {
+    list-style: none;
+    margin-left:-40px;
+    margin-bottom: 5px;
+}
+a {
+    color: #007baa;
+    text-decoration: none
+}
+a:hover {
+    text-decoration: underline
+}
+
+.description {
+    font-size: 1.2em;
+    margin-top: 5px;
+    font-style: italic;
+}
+.download {
+    float: right;
+}
+pre {
+    background: #000;
+    color: #fff;
+    padding: 15px;
+}
+hr {
+    border: 0;
+    width: 80%;
+    border-bottom: 1px solid #aaa;
+}
+#footer {
+    color: #97a9ac;
+    text-align:right;
+    padding-right:30px;
+    padding-top:30px;
+    padding-bottom:30px;
+    background: url(http://cloudsmith.github.com/stackhammer-api/images/footer_fill.jpg);
+}
+/*
+ * Posts in long (but not full format).
+ */
+.Postheader  h1, .Postheader a {
+    color: #f0324a;
+    font-size: 26px;
+    font-family:  Helvetica Neue W01 85 Heavy, Helvetica, Arial, FreeSans, san-serif;
+    letter-spacing:-1px;
+    margin-left:-1px;
+    margin-bottom:0px;
+}
+
+.Postcontent h2 {
+    color: #747575;
+    font-size: 18px;
+    font-family:  Helvetica, Arial, FreeSans, san-serif;
+}
+
+.Postcontent h3 {
+    color: #747575;
+    font-size: 14px;
+    font-family:  Helvetica, Arial, FreeSans, san-serif;
+}
+.Postcontent h1 {
+    color: #747575;
+    font-size: 24px;
+    font-family:  Helvetica, Arial, FreeSans, san-serif;
+}
+.Postheader .Postdate, .Faqheader .Faqdate {
+    color:#bbbbbb;
+    font-size:10px;
+}
+.Faqheader {
+    padding-top: 5px;
+}
+.Faqheader h1 {
+    font-size:16px;
+    color:#555555;
+    margin-bottom:0px;
+}
+.Faqheader .Postdate {
+    color:#bbbbbb;
+    font-size:10px;
+    margin-bottom:0px;
+}
+.Faqcontent p:first-child {
+    margin-top:6px;
+}
+.Faqcontent pre {
+    border-radius: 8px;
+    -moz-border-radius:8px;
+    background-color:white;
+    color: black;
+    border: 1px #cccccc solid;
+    margin-left: 20px;
+    margin-right:20px;
+}
+.Faqcategory h1 {
+    color: #f0324a;
+    font-size: 26px;
+    font-family:  Helvetica Neue W01 85 Heavy, Helvetica, Arial, FreeSans, san-serif;
+    letter-spacing:-1px;
+    margin-left:-1px;
+}
+div.Faqcategory {
+    border-bottom:1px solid #dddddd;
+}
+.FaqToc ul {
+  list-style-type:none;
+}
+li.Faqcategory {
+    text-transform:uppercase;
+    color: #007baa;
+    font-size:14px;
+    font-weight:700;
+    margin-top:10px;
+    margin-bottom:5px;
+    border-bottom:1px solid #dddddd;
+}
+.Postimage {
+   float: left;
+   margin-right:20px;
+   width:40%;
+}
+.Postimage img {
+    border-radius: 10px;
+    -moz-border-radius:10px;
+    width:100%;
+}
+/* UlTable is a wrapper around a UL that gives the UL a new left edge.
+ * This is important when text with UL is next to float left elements.
+ */
+.UlTable {
+    border-collapse: collapse;
+}
+.UlTable tr td, .UlTable tr th {
+    padding: 0;
+    margin:0;
+}
+.UlTable tr td ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.Imagecap {
+    font-style:italic;
+}
