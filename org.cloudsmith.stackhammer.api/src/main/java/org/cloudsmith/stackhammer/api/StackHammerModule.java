@@ -29,14 +29,14 @@ public class StackHammerModule extends AbstractModule {
 
 	private static final String PROTOCOL_HTTPS = "https"; //$NON-NLS-1$
 
-	private static final String STACKHAMMER_HOST = "api.stackhammer.com"; //$NON-NLS-1$
+	private static final String STACKHAMMER_HOST = "stackservice.cloudsmith.com"; //$NON-NLS-1$
 
 	private final String baseUri;
 
 	private final String credentials;
 
 	public StackHammerModule(String credentials) {
-		this(PROTOCOL_HTTPS, STACKHAMMER_HOST, 443, null, credentials);
+		this(PROTOCOL_HTTPS, STACKHAMMER_HOST, 443, "/service/api/", credentials);
 	}
 
 	/**
@@ -58,8 +58,18 @@ public class StackHammerModule extends AbstractModule {
 			uri.append(':');
 			uri.append(port);
 		}
-		if(prefix != null)
+
+		if(prefix != null && prefix.length() > 0) {
+			if(!prefix.startsWith("/"))
+				uri.append('/');
 			uri.append(prefix);
+			if(!prefix.endsWith("/"))
+				uri.append('/');
+		}
+		else
+			uri.append('/');
+
+		uri.append("1.0");
 
 		this.baseUri = uri.toString();
 		this.credentials = credentials;
