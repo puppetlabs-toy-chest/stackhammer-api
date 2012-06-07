@@ -181,10 +181,14 @@ public class StackHammerClient implements Constants {
 	}
 
 	/**
-	 * @param uri
-	 * @param params
-	 * @param type
-	 * @return
+	 * Executes a HTTP GET request. The http response is expected to be a JSON representation of
+	 * an object of the specified <code>type</code>. The object is parsed and returned.
+	 * 
+	 * @param uri The URL of the request
+	 * @param params Parameters to include in the URL
+	 * @param type The expected type of the result
+	 * @return An object of the expected type
+	 * @throws IOException if the request could not be completed
 	 */
 	public <V> V get(String uriStr, Map<String, String> params, Class<V> type) throws IOException {
 		URI uri;
@@ -380,6 +384,12 @@ public class StackHammerClient implements Constants {
 		return this;
 	}
 
+	/**
+	 * Set the user agent to use for all subsequent requests performed by this client.
+	 * 
+	 * @param agent The agent or <code>null</code> to use the default agent.
+	 * @return this client
+	 */
 	public StackHammerClient setUserAgent(final String agent) {
 		if(agent != null && agent.length() > 0)
 			userAgent = agent;
