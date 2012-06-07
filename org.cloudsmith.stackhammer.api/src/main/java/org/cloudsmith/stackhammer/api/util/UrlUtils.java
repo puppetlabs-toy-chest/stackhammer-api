@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Some useful methods when dealing with URL's
+ */
 public abstract class UrlUtils {
 	private static final String QUERY_ENCODING = "UTF-8";
 
@@ -35,6 +38,12 @@ public abstract class UrlUtils {
 		}
 	}
 
+	/**
+	 * Add parameters to the <code>uri</code>. The parameters will be encoded.
+	 * 
+	 * @param parameters The parameters to add.
+	 * @param uri The builder that will receive the encoded parameters.
+	 */
 	public static void addParameters(Map<String, String> parameters, StringBuilder uri) {
 		if(parameters == null || parameters.isEmpty())
 			return;
@@ -42,6 +51,12 @@ public abstract class UrlUtils {
 			addParameter(param.getKey(), param.getValue(), uri);
 	}
 
+	/**
+	 * Decode a value using the URLDecoder and UTF-8
+	 * 
+	 * @param value The value to decode
+	 * @return The decoded value.
+	 */
 	public static String decode(String value) {
 		try {
 			return URLDecoder.decode(value, QUERY_ENCODING);
@@ -51,6 +66,12 @@ public abstract class UrlUtils {
 		}
 	}
 
+	/**
+	 * Encode a value using the URLEncoder and UTF-8
+	 * 
+	 * @param value The value to encode
+	 * @return The encoded value.
+	 */
 	public static String encode(String value) {
 		try {
 			return URLEncoder.encode(value, QUERY_ENCODING);
@@ -60,6 +81,13 @@ public abstract class UrlUtils {
 		}
 	}
 
+	/**
+	 * Extract and decode query parameters from a URI and return them as
+	 * a map.
+	 * 
+	 * @param uri The uri from which the parameters should be parsed.
+	 * @return The map containing the result.
+	 */
 	public static Map<String, String> getParameters(URI uri) {
 		return parseQuery(uri.getRawQuery());
 	}
@@ -72,6 +100,12 @@ public abstract class UrlUtils {
 			result.put(decode(pair.substring(0, sep)), decode(pair.substring(sep + 1)));
 	}
 
+	/**
+	 * Extract and decode query parameters from an encoded query string
+	 * 
+	 * @param query The raw query string of a URI or URL.
+	 * @return The map containing the result.
+	 */
 	public static Map<String, String> parseQuery(String query) {
 		if(query == null || query.isEmpty())
 			return Collections.emptyMap();

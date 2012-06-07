@@ -76,6 +76,35 @@ public class StackHammerClient implements Constants {
 		gsonBuilder.setPrettyPrinting();
 	}
 
+	private static InputStream getStream(HttpEntity entity) throws IOException {
+		if(entity == null)
+			return null;
+
+		return entity.getContent();
+	}
+
+	/**
+	 * Does status code denote an error
+	 * 
+	 * @param code
+	 * @return true if error, false otherwise
+	 */
+	private static boolean isError(final int code) {
+		switch(code) {
+			case HttpStatus.SC_BAD_REQUEST:
+			case HttpStatus.SC_UNAUTHORIZED:
+			case HttpStatus.SC_FORBIDDEN:
+			case HttpStatus.SC_NOT_FOUND:
+			case HttpStatus.SC_CONFLICT:
+			case HttpStatus.SC_GONE:
+			case HttpStatus.SC_UNPROCESSABLE_ENTITY:
+			case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	private final String baseUri;
 
 	private final Gson gson = gsonBuilder.create();
@@ -96,6 +125,7 @@ public class StackHammerClient implements Constants {
 				? null
 				: (AUTH_TOKEN + ' ' + credentials);
 
+		userAgent = USER_AGENT;
 		httpClient = new DefaultHttpClient();
 		try {
 			httpClient.getConnectionManager().getSchemeRegistry().register(
@@ -184,16 +214,16 @@ public class StackHammerClient implements Constants {
 	 * Executes a HTTP GET request. The http response is expected to be a JSON representation of
 	 * an object of the specified <code>type</code>. The object is parsed and returned.
 	 * 
-	 * @param uri The URL of the request
+	 * @param urlStr The URL of the request
 	 * @param params Parameters to include in the URL
 	 * @param type The expected type of the result
 	 * @return An object of the expected type
 	 * @throws IOException if the request could not be completed
 	 */
-	public <V> V get(String uriStr, Map<String, String> params, Class<V> type) throws IOException {
+	public <V> V get(String urlStr, Map<String, String> params, Class<V> type) throws IOException {
 		URI uri;
 		try {
-			uri = new URI(createUri(uriStr));
+			uri = new URI(createUri(urlStr));
 			if(params != null && !params.isEmpty()) {
 				List<NameValuePair> queryParams = new ArrayList<NameValuePair>(params.size());
 				for(Map.Entry<String, String> param : params.entrySet())
@@ -211,42 +241,6 @@ public class StackHammerClient implements Constants {
 		HttpGet request = new HttpGet(uri);
 		configureRequest(request);
 		return executeRequest(request, type);
-	}
-
-	/**
-	 * Get stream from request
-	 * 
-	 * @param request
-	 * @return stream
-	 * @throws IOException
-	 */
-	protected InputStream getStream(HttpEntity entity) throws IOException {
-		if(entity == null)
-			return null;
-
-		return entity.getContent();
-	}
-
-	/**
-	 * Does status code denote an error
-	 * 
-	 * @param code
-	 * @return true if error, false otherwise
-	 */
-	protected boolean isError(final int code) {
-		switch(code) {
-			case HttpStatus.SC_BAD_REQUEST:
-			case HttpStatus.SC_UNAUTHORIZED:
-			case HttpStatus.SC_FORBIDDEN:
-			case HttpStatus.SC_NOT_FOUND:
-			case HttpStatus.SC_CONFLICT:
-			case HttpStatus.SC_GONE:
-			case HttpStatus.SC_UNPROCESSABLE_ENTITY:
-			case HttpStatus.SC_INTERNAL_SERVER_ERROR:
-				return true;
-			default:
-				return false;
-		}
 	}
 
 	/**

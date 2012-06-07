@@ -23,12 +23,30 @@ import org.cloudsmith.stackhammer.api.model.Repository;
 import org.cloudsmith.stackhammer.api.model.StackIdentifier;
 import org.cloudsmith.stackhammer.api.model.ValidationResult;
 
+/**
+ * A service that provides methods for stack related things.
+ */
 public class StackService extends StackHammerService {
 
+	/**
+	 * Creates a StackService instance that will use the designated client for
+	 * its communication with the remote service
+	 * 
+	 * @param client The client to be used for communicating with the remote service.
+	 */
 	public StackService(StackHammerClient client) {
 		super(client);
 	}
 
+	/**
+	 * Send a request to start a job that will deploy a stack to the remote service.
+	 * 
+	 * @param repository The repository containing the stack
+	 * @param stackName The name of the stack
+	 * @param dryRun Controls the puppet dry-run setting during deploy
+	 * @return A job identifier of the deploy job
+	 * @throws IOException If the job could not be started due to I/O problems.
+	 */
 	public String deployStack(Repository repository, String stackName, boolean dryRun) throws IOException {
 		StackIdentifier stackIdentifier = new StackIdentifier();
 		stackIdentifier.setRepository(repository);
@@ -45,8 +63,10 @@ public class StackService extends StackHammerService {
 	}
 
 	/**
-	 * @param jobIdentifier
-	 * @return
+	 * Retrieve the result of a deployment job that has completed from the remote service.
+	 * 
+	 * @param jobIdentifier The identifier of the job.
+	 * @return The result of the job
 	 */
 	public DeployResult getDeploymentResult(String jobIdentifier) throws IOException {
 		return getClient().get(
@@ -54,6 +74,14 @@ public class StackService extends StackHammerService {
 			DeployResult.class);
 	}
 
+	/**
+	 * Send a request to validate a stack to the remote service.
+	 * 
+	 * @param repository The repository containing the stack.
+	 * @param stackName The name of the stack.
+	 * @return The result of the validation.
+	 * @throws IOException If the validation could not be performed due to I/O problems.
+	 */
 	public ValidationResult validateStack(Repository repository, String stackName) throws IOException {
 		StackIdentifier request = new StackIdentifier();
 		request.setRepository(repository);

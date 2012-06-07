@@ -17,14 +17,30 @@ import org.cloudsmith.stackhammer.api.client.StackHammerClient;
 
 import com.google.inject.Inject;
 
+/**
+ * A Factory capable of creating the specialized services used when communicating
+ * with the Stack Hammer service
+ */
 public class StackHammerFactory {
 	@Inject
 	private StackHammerClient client;
 
+	/**
+	 * Creates a service that can be used when performing repository specific
+	 * actions.
+	 * 
+	 * @return A repository service.
+	 */
 	public RepositoryService createRepositoryService() {
 		return new RepositoryService(client);
 	}
 
+	/**
+	 * Creates a service that can be used when performing stack specific
+	 * actions.
+	 * 
+	 * @return A stack service.
+	 */
 	public StackService createStackService() {
 		return new StackService(client);
 	}

@@ -20,16 +20,39 @@ import org.cloudsmith.stackhammer.api.model.Provider;
 import org.cloudsmith.stackhammer.api.model.Repository;
 import org.cloudsmith.stackhammer.api.model.ResultWithDiagnostic;
 
+/**
+ * A service that provides methods for repository related things.
+ */
 public class RepositoryService extends StackHammerService {
 
 	public static class RepositoryResult extends ResultWithDiagnostic<Repository> {
 		private static final long serialVersionUID = 6242536629437814049L;
 	}
 
+	/**
+	 * Creates a RepositoryService instance that will use the designated client for
+	 * its communication with the remote service
+	 * 
+	 * @param client The client to be used for communicating with the remote service.
+	 */
 	public RepositoryService(StackHammerClient client) {
 		super(client);
 	}
 
+	/**
+	 * Send a request to ensure that a clean, read-only clone of the repository identified
+	 * by the <code>provider</code>, <code>owner</code>, and <code>name</code> is ready at
+	 * the remote service and that the given <code>branch</code> is checked out. If the
+	 * repository is already present, it will be subjected to a hard reset and a pull of the
+	 * given <code>branch</code>.
+	 * 
+	 * @param provider The provider of the repository.
+	 * @param owner The owner of the repository.
+	 * @param name The name of the repository.
+	 * @param branch The branch to use in the repository.
+	 * @return The result of the clone operation
+	 * @throws IOException
+	 */
 	public ResultWithDiagnostic<Repository> cloneRepository(Provider provider, String owner, String name, String branch)
 			throws IOException {
 		Repository repo = new Repository();

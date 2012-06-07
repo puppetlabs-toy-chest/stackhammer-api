@@ -48,7 +48,6 @@ public class StackHammerModule extends AbstractModule {
 	 * @param hostname The hostname of the server
 	 * @param port The port number
 	 * @param prefix The prefix to use (first segment in URL path)
-	 * @param user The login of the user
 	 * @param credentials User credentials (i.e. API token)
 	 */
 	public StackHammerModule(String scheme, String hostname, int port, String prefix, String credentials) {

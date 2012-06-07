@@ -20,6 +20,9 @@ import org.cloudsmith.stackhammer.api.Constants;
 import org.cloudsmith.stackhammer.api.client.StackHammerClient;
 import org.cloudsmith.stackhammer.api.model.PollResult;
 
+/**
+ * Abstract base class for all specialized services.
+ */
 public abstract class StackHammerService implements Constants {
 	@SuppressWarnings("unchecked")
 	protected static <T> void addRequiredParam(Map<String, T> params, String paramName, T paramValue)
@@ -44,16 +47,38 @@ public abstract class StackHammerService implements Constants {
 		this.client = client;
 	}
 
+	/**
+	 * Returns the client used for communication with the remote service
+	 * 
+	 * @return The client.
+	 */
 	public StackHammerClient getClient() {
 		return client;
 	}
 
+	/**
+	 * Returns the command group URL segment used by this service
+	 */
 	protected abstract String getCommandGroup();
 
+	/**
+	 * Creates the command path
+	 * 
+	 * @param command The command to create a path for
+	 * @return The path
+	 */
 	protected String getCommandURI(String command) {
 		return '/' + getCommandGroup() + '/' + command;
 	}
 
+	/**
+	 * Perfoms a poll of a job that was previously started by a method that returned a job
+	 * identifier.
+	 * 
+	 * @param jobIdentifier The identifier for the job
+	 * @return The current status as reported by the remote service.
+	 * @throws IOException If some I/O problems occured during the poll.
+	 */
 	public PollResult pollJob(String jobIdentifier) throws IOException {
 		return getClient().get('/' + COMMAND_POLL_JOB + '/' + jobIdentifier, null, PollResult.class);
 	}
