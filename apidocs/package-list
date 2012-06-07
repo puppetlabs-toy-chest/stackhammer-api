@@ -1,0 +1,5 @@
+org.cloudsmith.stackhammer.api
+org.cloudsmith.stackhammer.api.client
+org.cloudsmith.stackhammer.api.model
+org.cloudsmith.stackhammer.api.service
+org.cloudsmith.stackhammer.api.util
