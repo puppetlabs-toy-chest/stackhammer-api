@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cloudsmith.stackhammer</groupId>
 	<artifactId>api</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -74,11 +74,32 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<target-manifest-path>${basedir}/META-INF/MANIFEST.MF</target-manifest-path>
+		<target-manifest-path>${project.build.directory}/META-INF/MANIFEST.MF</target-manifest-path>
 	</properties>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<copy file="META-INF/SOURCE-MANIFEST.MF" tofile="${target-manifest-path}"
+									overwrite="true" />
+								<replace file="${target-manifest-path}">
+									<replacefilter token=".qualifier" value=".${maven.build.timestamp}" />
+								</replace>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
