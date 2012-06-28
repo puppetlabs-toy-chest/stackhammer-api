@@ -34,6 +34,21 @@ public class Repository implements Serializable {
 	}
 
 	/**
+	 * Returns the owner / name string
+	 * 
+	 * @return The owner / name string
+	 */
+	public String getFullName() {
+		StringBuilder bld = new StringBuilder();
+		if(owner != null)
+			bld.append(owner);
+		bld.append('/');
+		if(name != null)
+			bld.append(name);
+		return bld.toString();
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {

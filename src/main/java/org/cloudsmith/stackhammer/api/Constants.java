@@ -55,6 +55,16 @@ public interface Constants {
 	String COMMAND_POLL_JOB = "pollJob";
 
 	/**
+	 * URI path segment used by the runTests command
+	 */
+	String COMMAND_RUN_TESTS = "runTests";
+
+	/**
+	 * URI path segment used by the command to obtain the result of a runTests
+	 */
+	String COMMAND_RUN_TESTS_RESULT = "runTestsResult";
+
+	/**
 	 * URI path segment used by the validate command
 	 */
 	String COMMAND_VALIDATE = "validate";

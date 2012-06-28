@@ -15,11 +15,14 @@ package org.cloudsmith.stackhammer.api.service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.cloudsmith.stackhammer.api.client.StackHammerClient;
 import org.cloudsmith.stackhammer.api.model.DeployRequest;
 import org.cloudsmith.stackhammer.api.model.DeployResult;
 import org.cloudsmith.stackhammer.api.model.Repository;
+import org.cloudsmith.stackhammer.api.model.RunTestsRequest;
+import org.cloudsmith.stackhammer.api.model.RunTestsResult;
 import org.cloudsmith.stackhammer.api.model.StackIdentifier;
 import org.cloudsmith.stackhammer.api.model.ValidationResult;
 
@@ -51,6 +54,18 @@ public class StackService extends StackHammerService {
 		StackIdentifier stackIdentifier = new StackIdentifier();
 		stackIdentifier.setRepository(repository);
 		stackIdentifier.setStackName(stackName);
+		return deployStack(stackIdentifier, dryRun);
+	}
+
+	/**
+	 * Send a request to start a job that will deploy a stack to the remote service.
+	 * 
+	 * @param stackIdentifier The identifier of the stack
+	 * @param dryRun Controls the puppet dry-run setting during deploy
+	 * @return A job identifier of the deploy job
+	 * @throws IOException If the job could not be started due to I/O problems.
+	 */
+	public String deployStack(StackIdentifier stackIdentifier, boolean dryRun) throws IOException {
 		DeployRequest request = new DeployRequest();
 		request.setStackIdentifier(stackIdentifier);
 		request.setDryRun(dryRun);
@@ -75,6 +90,40 @@ public class StackService extends StackHammerService {
 	}
 
 	/**
+	 * Retrieve the result of a test run that has completed from the remote service.
+	 * 
+	 * @param jobIdentifier The identifier of the job.
+	 * @return The result of the job
+	 */
+	public RunTestsResult getRunTestsResult(String jobIdentifier) throws IOException {
+		return getClient().get(
+			getCommandURI(COMMAND_RUN_TESTS_RESULT), Collections.singletonMap(PARAM_JOB_IDENTIFIER, jobIdentifier),
+			RunTestsResult.class);
+	}
+
+	/**
+	 * Send a request to run stack tests to the remote service.
+	 * 
+	 * @param repository The repository containing the stack.
+	 * @param stackName The name of the stack.
+	 * @param testNames The names of the tests to run. Leave empty to run all tests
+	 * @param undeploy Set to <code>true</code> if the test harness stack should be
+	 *        undeployed when the run is complete
+	 * @return A job identifier of the job that performs the test run
+	 * @throws IOException If the run could not be performed due to I/O problems.
+	 */
+	public String runTests(Repository repository, String stackName, List<String> testNames, boolean undeploy)
+			throws IOException {
+		StackIdentifier stackId = new StackIdentifier();
+		stackId.setRepository(repository);
+		stackId.setStackName(stackName);
+		RunTestsRequest request = new RunTestsRequest();
+		request.setStackIdentifier(stackId);
+		request.setTestNames(testNames);
+		return getClient().post(getCommandURI(COMMAND_RUN_TESTS), request, String.class);
+	}
+
+	/**
 	 * Send a request to validate a stack to the remote service.
 	 * 
 	 * @param repository The repository containing the stack.
@@ -83,9 +132,9 @@ public class StackService extends StackHammerService {
 	 * @throws IOException If the validation could not be performed due to I/O problems.
 	 */
 	public ValidationResult validateStack(Repository repository, String stackName) throws IOException {
-		StackIdentifier request = new StackIdentifier();
-		request.setRepository(repository);
-		request.setStackName(stackName);
-		return getClient().post(getCommandURI(COMMAND_VALIDATE), request, ValidationResult.class);
+		StackIdentifier stackId = new StackIdentifier();
+		stackId.setRepository(repository);
+		stackId.setStackName(stackName);
+		return getClient().post(getCommandURI(COMMAND_VALIDATE), stackId, ValidationResult.class);
 	}
 }
