@@ -120,6 +120,7 @@ public class StackService extends StackHammerService {
 		RunTestsRequest request = new RunTestsRequest();
 		request.setStackIdentifier(stackId);
 		request.setTestNames(testNames);
+		request.setUndeploy(undeploy);
 		return getClient().post(getCommandURI(COMMAND_RUN_TESTS), request, String.class);
 	}
 
