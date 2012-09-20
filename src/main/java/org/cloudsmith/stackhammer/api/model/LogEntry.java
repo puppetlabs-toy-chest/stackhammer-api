@@ -30,37 +30,37 @@ public class LogEntry extends MessageWithSeverity {
 	private String details;
 
 	/**
-	 * Stack trace if this entry contains exception information
+	 * @return Stack trace if this entry contains exception information
 	 */
 	public String getDetails() {
 		return details;
 	}
 
 	/**
-	 * The exception message if this entry contains exception
-	 * information
+	 * @return The exception message if this entry contains exception
+	 *         information
 	 */
 	public String getExceptionMessage() {
 		return exceptionMessage;
 	}
 
 	/**
-	 * What logical entity that this entry originated from. Typically
-	 * the name of a Stack Hammer host.
+	 * @return What logical entity that this entry originated from. Typically
+	 *         the name of a Stack Hammer host.
 	 */
 	public String getLogicalOrigin() {
 		return logicalOrigin;
 	}
 
 	/**
-	 * What physical entity that this entry originated from. Typically an AWS instanceID.
+	 * @return What physical entity that this entry originated from. Typically an AWS instanceID.
 	 */
 	public String getPhysicalOrigin() {
 		return physicalOrigin;
 	}
 
 	/**
-	 * Millisecond timestamp of when this entry was generated
+	 * @return Millisecond timestamp of when this entry was generated
 	 */
 	public long getTimestamp() {
 		return timestamp;
@@ -84,5 +84,12 @@ public class LogEntry extends MessageWithSeverity {
 
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	/**
+	 * @return This entry in the form of a Diagnostic
+	 */
+	public Diagnostic toDiagnostic() {
+		return null;
 	}
 }

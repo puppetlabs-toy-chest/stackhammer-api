@@ -36,6 +36,8 @@ public class Diagnostic extends MessageWithSeverity {
 
 	private List<Diagnostic> children;
 
+	private int type;
+
 	private static final Pattern lineNumberPattern = Pattern.compile("^(\\d+).*");
 
 	public void addChild(Diagnostic child) {
@@ -118,6 +120,13 @@ public class Diagnostic extends MessageWithSeverity {
 	}
 
 	/**
+	 * @return The type of diagnostic
+	 */
+	public DiagnosticType getType() {
+		return DiagnosticType.values()[type];
+	}
+
+	/**
 	 * This method is needed by net.sf.json but should not otherwise
 	 * be used.
 	 * 
@@ -160,6 +169,10 @@ public class Diagnostic extends MessageWithSeverity {
 	 */
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	public void setType(DiagnosticType type) {
+		this.type = type.ordinal();
 	}
 
 	@Override
