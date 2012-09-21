@@ -15,14 +15,14 @@ public enum DiagnosticType {
 	// @fmtOff
 	UNKNOWN("Unknown"),
 	GEPPETTO("Geppetto"),
-	GEPPETTO_SYNTAX("Geppetto syntax"),	
-	CATALOG_PARSER("Catalog parser"),
+	GEPPETTO_SYNTAX("Geppetto Syntax"),	
+	CATALOG_PARSER("Catalog Parser"),
 	CATALOG("Catalog"),
 	FORGE("Forge"),
-	INTERNAL_ERROR("Internal error"),
-	RUBY_SYNTAX("Ruby syntax"),
+	INTERNAL_ERROR("Internal Error"),
+	RUBY_SYNTAX("Ruby Syntax"),
 	RUBY("Ruby"),
-	PUPPET_LINT("Puppet lint");
+	PUPPET_LINT("puppet-lint");
 	// @fmtOn
 
 	private final String label;
