@@ -13,13 +13,13 @@
  */
 package org.cloudsmith.stackhammer.api.model;
 
+import org.cloudsmith.geppetto.common.diagnostic.Diagnostic;
+
 /**
  * An entry describing an event in time
  */
-public class LogEntry extends MessageWithSeverity {
+public class LogEntry extends Diagnostic {
 	private static final long serialVersionUID = 9170716483071240390L;
-
-	private long timestamp;
 
 	private String logicalOrigin;
 
@@ -59,13 +59,6 @@ public class LogEntry extends MessageWithSeverity {
 		return physicalOrigin;
 	}
 
-	/**
-	 * @return Millisecond timestamp of when this entry was generated
-	 */
-	public long getTimestamp() {
-		return timestamp;
-	}
-
 	public void setDetails(String details) {
 		this.details = details;
 	}
@@ -80,10 +73,6 @@ public class LogEntry extends MessageWithSeverity {
 
 	public void setPhysicalOrigin(String physicalOrigin) {
 		this.physicalOrigin = physicalOrigin;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
 	}
 
 	/**

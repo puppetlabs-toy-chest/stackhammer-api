@@ -52,8 +52,10 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.cloudsmith.geppetto.common.diagnostic.Diagnostic;
+import org.cloudsmith.geppetto.common.diagnostic.DiagnosticType;
 import org.cloudsmith.stackhammer.api.Constants;
-import org.cloudsmith.stackhammer.api.model.Diagnostic;
+import org.cloudsmith.stackhammer.api.model.HttpDiagnostic;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -65,6 +67,8 @@ import com.google.inject.name.Named;
  * Class responsible for all request and response processing
  */
 public class StackHammerClient implements Constants {
+	public static final DiagnosticType HTTP = new DiagnosticType("HTTP", StackHammerClient.class.getName());
+
 	private static final String USER_AGENT = "StackHammerJava/1.0.0"; //$NON-NLS-1$
 
 	private final static Charset UTF_8 = Charset.forName("UTF-8");
@@ -274,7 +278,7 @@ public class StackHammerClient implements Constants {
 		int cnt;
 		while((cnt = reader.read(buffer)) > 0)
 			bld.append(buffer, 0, cnt);
-		Diagnostic diag = new Diagnostic();
+		HttpDiagnostic diag = new HttpDiagnostic();
 		diag.setMessage(bld.toString());
 		diag.setSeverity(Diagnostic.ERROR);
 		diag.setHttpCode(code);

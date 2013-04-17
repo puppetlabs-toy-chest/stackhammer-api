@@ -15,14 +15,14 @@ package org.cloudsmith.stackhammer.api.client;
 
 import java.io.IOException;
 
-import org.cloudsmith.stackhammer.api.model.Diagnostic;
+import org.cloudsmith.geppetto.common.diagnostic.Diagnostic;
 
 /**
  * This exception is thrown when the server encounters abnormal behavior such
  * as internal server errors.
  */
 public class RequestException extends IOException {
-	private static final long serialVersionUID = 3014441430950697818L;
+	private static final long serialVersionUID = -1088064346951892512L;
 
 	private final Diagnostic error;
 
