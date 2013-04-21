@@ -14,7 +14,7 @@
 
 package org.cloudsmith.stackhammer.api.model;
 
-import org.cloudsmith.geppetto.common.diagnostic.Diagnostic;
+import org.cloudsmith.geppetto.diagnostic.Diagnostic;
 import org.cloudsmith.stackhammer.api.client.StackHammerClient;
 
 public class HttpDiagnostic extends Diagnostic {

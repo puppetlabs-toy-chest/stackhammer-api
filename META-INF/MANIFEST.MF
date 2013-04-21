@@ -14,4 +14,4 @@ Require-Bundle: com.google.inject,
  com.google.gson,
  org.apache.httpcomponents.httpclient,
  org.apache.httpcomponents.httpcore,
- org.cloudsmith.geppetto.common
+ org.cloudsmith.geppetto.diagnostic;bundle-version="3.2.0"

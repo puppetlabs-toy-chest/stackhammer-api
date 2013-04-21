@@ -52,8 +52,8 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.cloudsmith.geppetto.common.diagnostic.Diagnostic;
-import org.cloudsmith.geppetto.common.diagnostic.DiagnosticType;
+import org.cloudsmith.geppetto.diagnostic.Diagnostic;
+import org.cloudsmith.geppetto.diagnostic.DiagnosticType;
 import org.cloudsmith.stackhammer.api.Constants;
 import org.cloudsmith.stackhammer.api.model.HttpDiagnostic;
 
