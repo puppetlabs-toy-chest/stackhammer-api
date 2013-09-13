@@ -13,7 +13,7 @@
  */
 package org.cloudsmith.stackhammer.api.model;
 
-import org.cloudsmith.geppetto.diagnostic.Diagnostic;
+import com.puppetlabs.geppetto.diagnostic.Diagnostic;
 
 /**
  * An entry describing an event in time

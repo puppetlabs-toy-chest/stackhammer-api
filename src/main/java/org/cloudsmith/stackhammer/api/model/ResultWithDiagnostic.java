@@ -15,7 +15,7 @@ package org.cloudsmith.stackhammer.api.model;
 
 import java.io.PrintStream;
 
-import org.cloudsmith.geppetto.diagnostic.Diagnostic;
+import com.puppetlabs.geppetto.diagnostic.Diagnostic;
 
 public class ResultWithDiagnostic<T> extends HttpDiagnostic {
 	private static final long serialVersionUID = 1618870489419505392L;

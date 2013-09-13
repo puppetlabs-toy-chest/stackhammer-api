@@ -15,7 +15,7 @@ package org.cloudsmith.stackhammer.api.client;
 
 import java.io.IOException;
 
-import org.cloudsmith.geppetto.diagnostic.Diagnostic;
+import com.puppetlabs.geppetto.diagnostic.Diagnostic;
 
 /**
  * This exception is thrown when the server encounters abnormal behavior such

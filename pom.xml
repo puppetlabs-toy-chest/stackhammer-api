@@ -54,8 +54,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.cloudsmith.geppetto</groupId>
-			<artifactId>org.cloudsmith.geppetto.diagnostic</artifactId>
+			<groupId>com.puppetlabs.geppetto</groupId>
+			<artifactId>com.puppetlabs.geppetto.diagnostic</artifactId>
 			<version>3.0.3-rc2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
